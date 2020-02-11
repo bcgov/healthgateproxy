@@ -1,6 +1,6 @@
 // British Columbia Health Gateway Proxy
-//
-//
+// See LICENSE
+
 var https = require('https'),
     http = require('http'),
     util = require('util'),

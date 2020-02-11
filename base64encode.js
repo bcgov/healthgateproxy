@@ -1,7 +1,10 @@
+// British Columbia Health Gateway Proxy support function
+// See LICENCE file
+
 var fs = require('fs');
 var winston = require('winston')
 
-/* util script to base64 encode a file */
+// util script to base64 encode a file
 var myArgs = process.argv.slice(2);
 
 if (myArgs.length < 1) {
