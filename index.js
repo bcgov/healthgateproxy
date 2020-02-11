@@ -108,7 +108,7 @@ app.use('/', function (req, res, next) {
 
         // Check against the resource URL
         // typical URL:
-        //    /MSPDESubmitApplication/2ea5e24c-705e-f7fd-d9f0-eb2dd268d523?programArea=enrolment
+        //    /healthgateproxy/2ea5e24c-705e-f7fd-d9f0-eb2dd268d523
         var pathname = url.parse(req.url).pathname;
         var pathnameParts = pathname.split("/");
 
