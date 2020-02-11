@@ -218,7 +218,7 @@ function logSplunkError (message) {
             'Content-Length': Buffer.byteLength(body),
             'logsource': process.env.HOSTNAME,
             'timestamp': moment().format('DD-MMM-YYYY'),
-            'program': 'msp-service',
+            'program': 'healthgateproxy',
             'serverity': 'error'
         }
     };
@@ -262,8 +262,8 @@ function logSplunkInfo (message) {
             'Content-Length': Buffer.byteLength(body),
             'logsource': process.env.HOSTNAME,
             'timestamp': moment().format('DD-MMM-YYYY'),
-            'method': 'MSP-Service - Pass Through',
-            'program': 'msp-service',
+            'method': 'healthgatepass - Pass Through',
+            'program': 'healthgatepass',
             'serverity': 'info'
         }
     };
@@ -287,5 +287,5 @@ function logSplunkInfo (message) {
     req.end();
 }
 
-logSplunkInfo('MyGovBC-MSP-Service server started on port 8080');
+logSplunkInfo('healthgateproxy service started on port 8080');
 
