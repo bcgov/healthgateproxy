@@ -1,0 +1,32 @@
+{
+  "name": "healthgateproxy",
+  "version": "1.0.0",
+  "description": "British Columbia Health Gateway Proxy Service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcgov/healthgateproxy.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/bcgov/healthgateproxy/issues"
+  },
+  "homepage": "https://github.com/bcgov/healthgateproxy#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "express": "^4.15.0",
+    "http-proxy-middleware": "^0.17.4",
+    "json-stringify-safe": "^5.0.1",
+    "jsonwebtoken": "^7.3.0",
+    "moment": "^2.20.1",
+    "winston": "^2.3.1"
+  },
+  "engines": {
+    "node": ">=11.0.0"
+  }
+}
