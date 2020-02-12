@@ -1,18 +1,25 @@
 # Deploy to OpenShift
 
-## Runtime Setup
-TBD
+## Build Setup
+After cloning this repository on your local filesystem, log into the openshift console gui and navigate to the tools project.
+Import the build config (bc) from .../openshift/templates/healthgateproxy-build.json.
+Before importing, look for xx-tools namespace and change it to the name of your tools project.
+Now you can navigate to the builds, and build the healthgateproxy.
+Note that this will only build the image with the tag "latest".
 
-## Deployment
-TBD
+## Deployment Setup
+For each of the runtime projects (ie. dev, test, prod):
+Navigate to the runtime project (say dev).
+Import the deploy config (dc) from .../openshift/templates/healthgateproxy-deploy.json.
+Before importing, look for xx-tool namespace and change it to the name of your tools project.
+Create the deployment.
+Make sure the permissions are setup for dev to see tools images.
+Tag the tools' image as dev, see below.
 
 ### Change Propagation
-To promote runtime image from one environment to another, for example from *dev* to *test*, run
-
+To promote a build to your runtime projects (ie. dev, test, prod):
 ```
-oc tag <yourprojectname-tools>/healthgateproxy:latest <yourprojectname-test>/healthgateproxy:latest <yourprojectname-tools>/healthgateproxy:test
+oc tag <yourproject-tools>/healthgateproxy:latest <yourproject-dev>/healthgateproxy:dev 
 ```
-The above command will deploy the latest/dev runtime image to *test* env. The purpose of tagging runtime image of *test* env in both \<yourprojectname-test\>/healthgateproxy:latest and \<yourprojectname-tools\>/healthgateproxy:test is to use \<yourprojectname-tools\>/healthgateproxy:test as backup such that in case the image stream \<yourprojectname-test\>/healthgateproxy, which is used by *test* runtime pods, is deleted inadvertently, it can be recovered from \<yourprojectname-tools\>/healthgateproxy:test.
+The above command will deploy the latest runtime image to *dev* env. 
 
-## Tips
-To find source code commit point of a runtime instance on OpenShift, open a terminal on one of the running pods and run command `git rev-parse HEAD` in cwd.
