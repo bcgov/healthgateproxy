@@ -36,16 +36,16 @@
           "type": "Git",
           "git": {
             "uri": "${GIT_SOURCE_URL}",
-	    "ref": "${GIT_REFERENCE}"
+            "ref": "${GIT_REFERENCE}"
           }
         },
         "strategy": {
           "type": "Source",
           "sourceStrategy": {
             "from": {
-                "kind": "ImageStreamTag",
-		"namespace": "openshift",
-                "name": "nodejs:6"
+              "kind": "ImageStreamTag",
+              "namespace": "openshift",
+              "name": "nodejs:10"
             },
           }
         },
