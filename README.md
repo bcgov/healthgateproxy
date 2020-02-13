@@ -11,7 +11,7 @@ A NodeJS based proxy service for the British Columbia Health Gateway application
 5. Utility to convert file like a PEM to base64 string `base64encode.js` for use in configuration
 
 ## Developer Prerequisites
-* node@>=11.0.0
+* node@>=10.15.1
 * npm@>=6.13.4 
 * GIT
 
