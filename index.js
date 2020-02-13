@@ -32,6 +32,7 @@ function logProvider(provider) {
 //    timestamp: true
 // });
 
+//
 // Init express
 //
 var app = express();
@@ -71,10 +72,11 @@ app.use('/', function (req, res, next) {
 
         // Parse out the token
         var token = authHeaderValue.replace("Bearer ", "");
-		if (token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY)) {
-			denyAccess("Missing or incorrect Bearer token", res, req);
-			return;
-		}
+
+        if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
+          denyAccess("Missing or incorrect Bearer", res, req);
+          return;
+        }
 
         // Check against the resource URL
         // typical URL:
