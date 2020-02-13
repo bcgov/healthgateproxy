@@ -32,7 +32,6 @@ function logProvider(provider) {
 //    timestamp: true
 // });
 
-//
 // Init express
 //
 var app = express();
@@ -80,7 +79,7 @@ app.use('/', function (req, res, next) {
 
         // Check against the resource URL
         // typical URL:
-        //    /healthgateproxy/2ea5e24c-705e-f7fd-d9f0-eb2dd268d523
+        //    /healthgateproxy/...
         var pathname = url.parse(req.url).pathname;
         var pathnameParts = pathname.split("/");
 
