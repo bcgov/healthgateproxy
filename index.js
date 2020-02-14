@@ -73,8 +73,8 @@ app.use('/', function (req, res, next) {
         var token = authHeaderValue.replace("Bearer ", "");
 
         if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
-          denyAccess("Missing or incorrect Bearer", res, req);
-          return;
+            denyAccess("Missing or incorrect Bearer", res, req);
+            return;
         }
 
         // Check against the resource URL
@@ -98,9 +98,9 @@ app.use('/', function (req, res, next) {
 if (process.env.USE_MUTUAL_TLS &&
     process.env.USE_MUTUAL_TLS == "true") {
     var httpsAgentOptions = {
-        key: new Buffer(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
+        key: Buffer.alloc(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
         passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
-        cert: new Buffer(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
+        cert: Buffer.alloc(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
     };
     var myAgent = new https.Agent(httpsAgentOptions);
 }
@@ -226,8 +226,8 @@ function logSplunkInfo (message) {
             'Content-Length': Buffer.byteLength(body),
             'logsource': process.env.HOSTNAME,
             'timestamp': moment().format('DD-MMM-YYYY'),
-            'method': 'healthgatepass - Pass Through',
-            'program': 'healthgatepass',
+            'method': 'healthgateproxy - Pass Through',
+            'program': 'healthgateproxy',
             'serverity': 'info'
         }
     };
