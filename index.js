@@ -98,9 +98,9 @@ app.use('/', function (req, res, next) {
 if (process.env.USE_MUTUAL_TLS &&
     process.env.USE_MUTUAL_TLS == "true") {
     var httpsAgentOptions = {
-        key: Buffer.alloc(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
+        key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
         passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
-        cert: Buffer.alloc(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
+        cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
     };
     var myAgent = new https.Agent(httpsAgentOptions);
 }
