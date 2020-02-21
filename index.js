@@ -107,7 +107,7 @@ if (process.env.USE_MUTUAL_TLS &&
 }
 
 // Create a HTTP Proxy server with a HTTPS target
-var proxy = proxy({
+var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "http://localhost:3000",
     agent: myAgent || http.globalAgent,
     secure: process.env.SECURE_MODE || false,
