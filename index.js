@@ -8,7 +8,6 @@ var https = require('https'),
     fs = require('fs'),
     colors = require('colors'),
     winston = require('winston'),
-    jwt = require('jsonwebtoken'),
     url = require('url'),
     stringify = require('json-stringify-safe'),
     express = require('express'),
@@ -33,21 +32,6 @@ function logProvider(provider) {
 //    timestamp: true
 // });
 
-//
-// Generate token for monitoring apps
-//
-if (process.env.USE_AUTH_TOKEN &&
-    process.env.USE_AUTH_TOKEN == "true" &&
-    process.env.AUTH_TOKEN_KEY &&
-    process.env.AUTH_TOKEN_KEY.length > 0) {
-
-    var monitoringToken = jwt.sign({
-        data: {nonce: "status"}
-    }, process.env.AUTH_TOKEN_KEY);
-    logSplunkInfo("Monitoring token: " + monitoringToken);
-}
-
-//
 // Init express
 //
 var app = express();
@@ -87,28 +71,14 @@ app.use('/', function (req, res, next) {
 
         // Parse out the token
         var token = authHeaderValue.replace("Bearer ", "");
-
-        var decoded = null;
-        try {
-            // Decode token
-            decoded = jwt.verify(token, process.env.AUTH_TOKEN_KEY);
-        } catch (err) {
-            logSplunkError("jwt verify failed, x-authorization: " + authHeaderValue + "; err: " + err);
-            denyAccess("jwt unverifiable", res, req);
-            return;
-        }
-
-        // Ensure we have a nonce
-        if (decoded == null ||
-            decoded.data.nonce == null ||
-            decoded.data.nonce.length < 1) {
-            denyAccess("missing nonce", res, req);
-            return;
-        }
+		if (token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY)) {
+			denyAccess("Missing or incorrect Bearer token", res, req);
+			return;
+		}
 
         // Check against the resource URL
         // typical URL:
-        //    /healthgateproxy/2ea5e24c-705e-f7fd-d9f0-eb2dd268d523
+        //    /healthgateproxy/...
         var pathname = url.parse(req.url).pathname;
         var pathnameParts = pathname.split("/");
 
@@ -118,13 +88,6 @@ app.use('/', function (req, res, next) {
             denyAccess("missing noun or resource id", res, req);
             return;
         }
-		else {
-			// Finally, check that resource ID against the nonce
-			if (pathnameParts[nounIndex + 1] != decoded.data.nonce) {
-				denyAccess("resource id and nonce are not equal: " + pathnameParts[nounIndex + 1] + "; " + decoded.data.nonce, res, req);
-				return;
-			}
-		}
     }
     // OK its valid let it pass thru this event
     next(); // pass control to the next handler
