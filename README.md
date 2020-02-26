@@ -11,7 +11,7 @@ A NodeJS based proxy service for the British Columbia Health Gateway application
 5. Utility to convert file like a PEM to base64 string `base64encode.js` for use in configuration
 
 ## Developer Prerequisites
-* node@>=11.0.0
+* node@>=10.15.1
 * npm@>=6.13.4 
 * GIT
 
@@ -23,7 +23,6 @@ Name | Description
 TARGET_URL | Base URL to send HTTP request
 TARGET_HEADER_HOST | Host header to send
 TARGET_USERNAME_PASSWORD | For HTTP Basic the username:password
-CORS_ORIGIN | Optional, if using CORS supply use domain name of the allowed origin
 MUTUAL_TLS_PEM_KEY_BASE64 | A base64 encoded PEM key string
 MUTUAL_TLS_PEM_KEY_PASSPHRASE | The passphrase for the above PEM key
 MUTUAL_TLS_PEM_CERT | The client certificate for the above KEY in a base64 encoded PEM format

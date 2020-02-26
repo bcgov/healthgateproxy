@@ -32,6 +32,7 @@ function logProvider(provider) {
 //    timestamp: true
 // });
 
+//
 // Init express
 //
 var app = express();
@@ -71,10 +72,11 @@ app.use('/', function (req, res, next) {
 
         // Parse out the token
         var token = authHeaderValue.replace("Bearer ", "");
-		if (token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY)) {
-			denyAccess("Missing or incorrect Bearer token", res, req);
-			return;
-		}
+
+        if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
+            denyAccess("Missing or incorrect Bearer", res, req);
+            return;
+        }
 
         // Check against the resource URL
         // typical URL:
@@ -97,15 +99,15 @@ app.use('/', function (req, res, next) {
 if (process.env.USE_MUTUAL_TLS &&
     process.env.USE_MUTUAL_TLS == "true") {
     var httpsAgentOptions = {
-        key: new Buffer(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
+        key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
         passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
-        cert: new Buffer(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
+        cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
     };
     var myAgent = new https.Agent(httpsAgentOptions);
 }
 
 // Create a HTTP Proxy server with a HTTPS target
-var proxy = proxy({
+var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "http://localhost:3000",
     agent: myAgent || http.globalAgent,
     secure: process.env.SECURE_MODE || false,
@@ -225,8 +227,8 @@ function logSplunkInfo (message) {
             'Content-Length': Buffer.byteLength(body),
             'logsource': process.env.HOSTNAME,
             'timestamp': moment().format('DD-MMM-YYYY'),
-            'method': 'healthgatepass - Pass Through',
-            'program': 'healthgatepass',
+            'method': 'healthgateproxy - Pass Through',
+            'program': 'healthgateproxy',
             'serverity': 'info'
         }
     };
