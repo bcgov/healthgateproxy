@@ -74,12 +74,15 @@
         }
       },
       "MedicationRecordsType": {
-        "$comment": "TODO: Determine whether rx status, and discontinue date should be in record",
         "id": "#medicationRecords",
         "type": "array",
         "record": {
           "depenseId": {
             "type": "string"
+          },
+          "$comment": "Date the prescription was dispensed",
+          "dateDispensed": {
+            "$ref": "#/definitions/DateType"
           },
           "rxNumber": {
             "type": "string"
@@ -118,6 +121,13 @@
           },
           "directions": {
             "type": "string"
+          },
+          "rxStatus": {
+            "type": "string",
+            "enum": [
+              "filled",
+              "discontinued"
+            ]
           }
         }
       }
@@ -128,6 +138,9 @@
       "getMedicationHistoryRequest": {
         "type": "object",
         "properties": {
+          "uuid": {
+            "type": "string"
+          },
           "startDate": {
             "$ref": "#/definitions/DateType"
           },
@@ -151,12 +164,16 @@
           }
         },
         "required": [
+          "uuid",
           "phn"
         ]
       },
       "getMedicationHistoryResponse": {
         "type": "object",
         "properties": {
+          "uuid": {
+            "type": "string"
+          },
           "medicationResultSet": {
             "type": "array",
             "pages": {
@@ -174,7 +191,10 @@
           "numberOfPages": {
             "type": "integer"
           }
-        }
+        },
+        "required": [
+          "uuid"
+        ]
       }
     }
   }
