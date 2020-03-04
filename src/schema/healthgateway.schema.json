@@ -2,72 +2,163 @@
     "id": "healthgateway/healthgateway.schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "version": "1.0.0",
-    "definitions": { 
-    	"DateType":{
-	      "type":"string",
-	      "pattern":"^[12][0-9]{3}-[01][0-9]-[0-9]{2}$"
-	    },
-    	"PHNType":{
-	      	"type":"string",
-	        "minLength": 9,
-	        "maxLength": 9,
-	      	"pattern": "^[0-9]{9}$"
-    	},
-		"PageSizeType":{
-			"type": "integer",
-			"minimum": 1
-		},
-        "GetMedicationHistoryRequestType": { 
-	        "type": "object", 
-	        "properties": {
-	            "startDate": { 
-	            	"$ref":"#/definitions/DateType"
-	            },
-	            "endDate": { 
-	            	"$ref":"#/definitions/DateType"
-	            },
-	            "phn": { 
-	            	"$ref":"#/definitions/PHNType"
-	            },
-	            "pageSize": { 
-	            	"$ref":"#/definitions/PHNType"
-	            }
-			},
-            "required": [
-                "phn",
-                "pageSize"
-            ]
-		},
-        "GetMedicationHistoryResponseType": { 
-	        "type": "object", 
-	        "properties": {
-	            "startDate": { 
-	            	"$ref":"#/definitions/DateType"
-	            },
-	            "endDate": { 
-	            	"$ref":"#/definitions/DateType"
-	            },
-	            "phn": { 
-	            	"$ref":"#/definitions/PHNType"
-	            },
-	            "pageSize": { 
-	            	"$ref":"#/definitions/PHNType"
-	            }
-			},
-            "required": [
-                "phn",
-                "pageSize"
-            ]
-		}
+    "definitions": {
+      "DateType": {
+        "type": "string",
+        "pattern": "^[12][0-9]{3}-[01][0-9]-[0-9]{2}$"
+      },
+      "PhnType": {
+        "type": "string",
+        "minLength": 9,
+        "maxLength": 9,
+        "pattern": "^[0-9]{9}$"
+      },
+      "PageSizeType": {
+        "type": "integer"
+      },
+      "PageNumberType": {
+        "type": "integer"
+      },
+      "OrderByType": {
+        "type": "string",
+        "enum": [
+          "asc",
+          "desc"
+        ]
+      },
+      "NameType": {
+        "id": "#name",
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "middleInit": { "type": "string" },
+          "LastName": { "type": "string" }
+        }
+      },
+      "AddressLineType": {
+        "type": "string",
+        "maxLength": 25
+      },
+      "AddressType": {
+        "id": "#address",
+        "type": "object",
+        "properties": {
+          "addrLine1": {
+            "$ref": "#/definitions/AddressLineType"
+          },
+          "addrLine2": {
+            "$ref": "#/definitions/AddressLineType"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 25
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 2
+          },
+          "country": {
+            "type": "string",
+            "maxLength": 3
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 25
+          }
+        }
+      },
+      "MedicationRecordType": {
+        "$comment": "TODO: Determine whether rx status, and discontinue date should be in record",
+        "id": "#medicationRecord",
+        "type": "object",
+        "properties": {
+          "depenseId": {
+            "type": "string"
+          },
+          "rxNumber": {
+            "type": "string"
+          },
+          "genericName": {
+            "type": "string"
+          },
+          "practitioner": {
+            "$ref": "#name"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "refills": {
+            "type": "string"
+          },
+          "dinpin": {
+            "type": "string"
+          },
+          "dispensingPharmacy": {
+            "pharmacyId": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "siteAddress": {
+              "$ref": "#address"
+            },
+            "phoneNumber": {
+              "type": "string"
+            },
+            "faxNumber": {
+              "type": "string"
+            }
+          },
+          "directions": { "type": "string" }
+        }
+      }
     },
     "title": "HealthGateway",
     "type": "object",
     "properties": {
-        "getMedicationHistoryRequest": {
-            "$ref": "#/definitions/GetMedicationHistoryRequestType"
+      "getMedicationHistoryRequest": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "$ref": "#/definitions/DateType"
+          },
+          "endDate": {
+            "$ref": "#/definitions/DateType"
+          },
+          "phn": {
+            "$ref": "#/definitions/PhnType"
+          },
+          "pageSize": {
+            "$ref": "#/definitions/PageSizeType",
+            "default": 25
+          },
+          "pageNumber": {
+            "$ref": "#/definitions/PageNumberType",
+            "default": 1
+          },
+          "order": {
+            "$ref": "#/definitions/OrderByType",
+            "default": "desc"
+          }
         },
-        "getMedicationHistoryResponse": {
-            "$ref": "#/definitions/GetMedicationHistoryResponseType"
+        "required": [
+          "phn"
+        ]
+      },
+      "getMedicationHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "medicationResultSet": {
+            "type": "array",
+            "properities": {
+                "medicationRecords": { "$ref": "#medicationRecord" }
+            }
+          },
+          "numberOfPages": {
+            "type": "integer"
+          }
         }
+      }
     }
-}
+  }
