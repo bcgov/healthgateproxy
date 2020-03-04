@@ -30,9 +30,15 @@
         "id": "#name",
         "type": "object",
         "properties": {
-          "firstName": { "type": "string" },
-          "middleInit": { "type": "string" },
-          "LastName": { "type": "string" }
+          "firstName": {
+            "type": "string"
+          },
+          "middleInit": {
+            "type": "string"
+          },
+          "LastName": {
+            "type": "string"
+          }
         }
       },
       "AddressLineType": {
@@ -67,11 +73,11 @@
           }
         }
       },
-      "MedicationRecordType": {
+      "MedicationRecordsType": {
         "$comment": "TODO: Determine whether rx status, and discontinue date should be in record",
-        "id": "#medicationRecord",
-        "type": "object",
-        "properties": {
+        "id": "#medicationRecords",
+        "type": "array",
+        "record": {
           "depenseId": {
             "type": "string"
           },
@@ -110,7 +116,9 @@
               "type": "string"
             }
           },
-          "directions": { "type": "string" }
+          "directions": {
+            "type": "string"
+          }
         }
       }
     },
@@ -151,8 +159,16 @@
         "properties": {
           "medicationResultSet": {
             "type": "array",
-            "properities": {
-                "medicationRecords": { "$ref": "#medicationRecord" }
+            "pages": {
+              "records": {
+                "$ref": "#medicationRecords"
+              },
+              "totalrecords": {
+                "type": "integer"
+              },
+              "pageNumber": {
+                "$ref": "#/definitions/PageNumberType"
+              }
             }
           },
           "numberOfPages": {
