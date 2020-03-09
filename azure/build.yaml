@@ -5,19 +5,22 @@ variables:
   App.Home: $(Build.SourcesDirectory)/
   App.Name: hgproxy
 
+pr: none
+
 trigger:
-  - master
+ batch: 'true'
+ branches:
+   include:
+     - master
 
 pool:
-  vmImage: "HealthGateway"
+  name: 'HealthGateway'
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "11.x"
-    displayName: "Install Node.js"
-
   - script: |
-      npm install
-      npm run build
-    displayName: "npm install and build"
+      set -e
+      oc process -f $(Build.SourcesDirectory)/openshift/templates/healthgateproxy-build.json -p NAME=$(App.Name) | oc apply -f -
+      oc start-build $(App.Name) --wait --follow 
+      oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
+    displayName: 'Build OpenShift Image and push to Image Stream'
+    enabled: 'true'
