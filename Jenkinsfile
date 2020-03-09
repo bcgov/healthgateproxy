@@ -1,9 +1,8 @@
-// jenkins file for splunk-forwarder
+// jenkins file 
 
 def APP_NAME = 'healthgateproxy'
 def APP_VERSION = 'master'
-def TAG_NAMES = ['dev']
-
+def TAG_NAMES = ['dev', 'test', 'prod']
 def BUILD_CONFIG = APP_NAME 
 def IMAGESTREAM_NAME = APP_NAME
 
