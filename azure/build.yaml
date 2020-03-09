@@ -3,7 +3,7 @@ name: 1.0.0$(Rev:.r) #Build number
 #Build variables
 variables:
   App.Home: $(Build.SourcesDirectory)/
-  App.Name: hgproxy
+  App.Name: odrproxy
 
 pr: none
 
