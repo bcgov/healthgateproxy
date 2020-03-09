@@ -42,7 +42,7 @@ function logProvider(provider) {
 // create winston logger
 //
 var logger = winston.createLogger({
-   transports: [ new winston.transports.Console(format: winston.format.simple()) ]
+   transports: [ new winston.transports.Console() ]
 });
 
 //
