@@ -16,7 +16,7 @@ var https = require('https'),
 
 // verbose replacement
 function logProvider(provider) {
-	var myProvider;
+	/*
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
       myProvider = {
         log: logger.log,
@@ -35,6 +35,15 @@ function logProvider(provider) {
         error: logger.error
       };
 	}
+	return myProvider;
+	*/
+	var myProvider = {
+        log: logger.log,
+        debug: logger.debug,
+        info: logger.info,
+        warn: logger.warn,
+        error: logger.error
+    };
 	return myProvider;
 }
 
