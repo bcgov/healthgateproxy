@@ -113,6 +113,10 @@
                   {
                     "name": "SPLUNK_AUTH_TOKEN",
                     "value": "${SPLUNK_AUTH_TOKEN}"
+                  },
+                  {
+                    "name": "USE_SPLUNK",
+                    "value": "${USE_SPLUNK}"
                   }
                 ],
                 "resources": {
@@ -324,6 +328,13 @@
       "name": "SPLUNK_AUTH_TOKEN",
       "required": true,
       "value": ""
+    },
+    {
+      "description": "flag to use the splunk server",
+      "displayName": "USE_SPLUNK",
+      "name": "USE_SPLUNK",
+      "required": true,
+      "value": "false"
     }
   ]
 }
