@@ -39,9 +39,11 @@ function logProvider(provider) {
 	return myProvider;
 }
 
-// winston.add(winston.transports.Console, {
-//    timestamp: true
-// });
+if (! process.env.USE_SPLUNK || process.env.USE_SPLUNK == 'false') {
+  winston.add(winston.transports.Console, {
+    timestamp: true
+  });
+}
 
 //
 // Init express
