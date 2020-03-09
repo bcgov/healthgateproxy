@@ -16,21 +16,30 @@ var https = require('https'),
 
 // verbose replacement
 function logProvider(provider) {
-    var logger = winston;
+    var logger = winston.createLogger({
+	   transports: [ new winston.transports.Console() ]
+    });
 
-    var myCustomProvider = {
+	var myProvider;
+	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+      myProvider = {
         log: logger.log,
         debug: logger.debug,
         info: logSplunkInfo,
         warn: logger.warn,
         error: logSplunkError
-    }
-    return myCustomProvider;
+      };
+	else {
+      myProvider = {
+        log: logger.log,
+        debug: logger.debug,
+        info: logger.info,
+        warn: logger.warn,
+        error: logger.error
+      };
+	}
+	return myProvider;
 }
-
-// winston.add(winston.transports.Console, {
-//    timestamp: true
-// });
 
 //
 // Init express
@@ -46,7 +55,10 @@ app.get('/status', function (req, res) {
 app.use('/', function (req, res, next) {
     // Log it
     // logSplunkInfo("incoming: ", req.method, req.headers.host, req.url, res.statusCode, req.headers["x-authorization"]);
-    logSplunkInfo("incoming: " + req.url);
+	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+      logSplunkInfo("incoming: " + req.url);
+	else
+	  logger.info("incoming: " + req.url);
 	// logSplunkInfo(" x-authorization: " + req.headers["x-authorization"]);
 
     // Get authorization from browser
@@ -119,7 +131,10 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
-        logSplunkError("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
+	    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+          logSplunkError("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
+		else
+		  logger.info("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
         res.writeHead(500, {
             'Content-Type': 'text/plain'
         });
@@ -157,7 +172,10 @@ app.listen(8080);
  */
 function denyAccess(message, res, req) {
 
-    logSplunkError(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers));
+	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+      logSplunkError(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers));
+	else
+      logger.info(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers));
 
     res.writeHead(401);
     res.end();
@@ -252,5 +270,8 @@ function logSplunkInfo (message) {
     req.end();
 }
 
-logSplunkInfo('healthgateproxy service started on port 8080');
+if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+  logSplunkInfo('healthgateproxy service started on port 8080');
+else
+  logger.info('healthgateproxy service started on port 8080');
 
