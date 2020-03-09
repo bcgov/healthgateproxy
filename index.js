@@ -14,43 +14,13 @@ var https = require('https'),
     moment = require('moment');
     proxy = require('http-proxy-middleware');
 
-// verbose replacement
-function logProvider(provider) {
-	/*
-	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
-      myProvider = {
-        log: logger.log,
-        debug: logger.debug,
-        info: logSplunkInfo,
-        warn: logger.warn,
-        error: logSplunkError
-      };
-	}
-	else {
-      myProvider = {
-        log: logger.log,
-        debug: logger.debug,
-        info: logger.info,
-        warn: logger.warn,
-        error: logger.error
-      };
-	}
-	return myProvider;
-	*/
-	var myProvider = {
-        log: logger.log,
-        debug: logger.debug,
-        info: logger.info,
-        warn: logger.warn,
-        error: logger.error
-    };
-	return myProvider;
-}
-
 //
 // create winston logger
 //
-var logger = winston.createLogger({
+const logger = winston.createLogger({
+   level: 'info',
+   format: winston.format.simple(),
+   defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
 });
 
@@ -129,6 +99,30 @@ if (process.env.USE_MUTUAL_TLS &&
         cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
     };
     var myAgent = new https.Agent(httpsAgentOptions);
+}
+
+// verbose replacement
+function logProvider(provider) {
+	var myCustomProvider;
+	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
+      myCustomProvider = {
+        log: logger.log,
+        debug: logger.debug,
+        info: logSplunkInfo,
+        warn: logger.warn,
+        error: logSplunkError
+      };
+	}
+	else {
+      myCustomProvider = {
+        log: logger.log,
+        debug: logger.debug,
+        info: logger.info,
+        warn: logger.warn,
+        error: logger.error
+      };
+	}
+	return myCustomProvider;
 }
 
 // Create a HTTP Proxy server with a HTTPS target
