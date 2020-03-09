@@ -18,8 +18,9 @@ var https = require('https'),
 function logProvider(provider) {
     var logger = winston;
 
+	var myProvider;
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-      return {
+      myProvider = {
         log: logger.log,
         debug: logger.debug,
         info: logSplunkInfo,
@@ -27,7 +28,7 @@ function logProvider(provider) {
         error: logSplunkError
       };
 	else {
-      return {
+      myProvider = {
         log: logger.log,
         debug: logger.debug,
         info: logger.info,
@@ -35,6 +36,7 @@ function logProvider(provider) {
         error: logger.error
       };
 	}
+	return myProvider;
 }
 
 // winston.add(winston.transports.Console, {
