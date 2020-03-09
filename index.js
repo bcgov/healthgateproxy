@@ -18,9 +18,9 @@ var https = require('https'),
 // create winston logger
 //
 const logger = winston.createLogger({
-   level: 'info',
-   format: winston.format.simple(),
-   defaultMeta: { service: 'user-service' },
+   // level: 'info',
+   // format: winston.format.simple(),
+   // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
 });
 
