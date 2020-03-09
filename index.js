@@ -16,7 +16,9 @@ var https = require('https'),
 
 // verbose replacement
 function logProvider(provider) {
-    var logger = winston;
+    var logger = winston.createLogger({
+	   transports: [ new winston.transports.Console() ]
+    });
 
 	var myProvider;
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
@@ -37,12 +39,6 @@ function logProvider(provider) {
       };
 	}
 	return myProvider;
-}
-
-if (! process.env.USE_SPLUNK || process.env.USE_SPLUNK == 'false') {
-  winston.add(winston.transports.Console, {
-    timestamp: true
-  });
 }
 
 //
