@@ -3,10 +3,6 @@
 
 var https = require('https'),
     http = require('http'),
-    util = require('util'),
-    path = require('path'),
-    fs = require('fs'),
-    colors = require('colors'),
     winston = require('winston'),
     url = require('url'),
     stringify = require('json-stringify-safe'),
@@ -18,7 +14,7 @@ var https = require('https'),
 // create winston logger
 //
 const logger = winston.createLogger({
-   // level: 'info',
+    level: 'debug',
    // format: winston.format.simple(),
    // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
@@ -31,6 +27,7 @@ var app = express();
 
 // Add status endpoint
 app.get('/status', function (req, res) {
+    logger.debug("/status: " + req.url);
     res.send("OK");
 });
 
@@ -46,6 +43,8 @@ app.use('/', function (req, res, next) {
 
     // Get authorization from browser
     var authHeaderValue = req.headers["x-authorization"];
+
+    logger.debug("/ - authHeader value: " + authHeaderValue);
 
     // Delete it because we add HTTP Basic later
     delete req.headers["x-authorization"];
