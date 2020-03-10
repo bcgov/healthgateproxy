@@ -34,7 +34,7 @@ app.get('/status', function (req, res) {
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
 
-    somePromise.then(() => {
+    try {
         // Log it
         if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
             logSplunkInfo("incoming: " + req.url);
@@ -87,10 +87,9 @@ app.use('/', function (req, res, next) {
         }
         // OK its valid let it pass thru this event
         next(); // pass control to the next handler
-    })
-    .catch( (next) => {
-        logger.debug( "Error condition" + next.err );
-    });
+    } catch (e) {
+        logger.debug( "Error condition" + e);
+    };
     
 });
 
