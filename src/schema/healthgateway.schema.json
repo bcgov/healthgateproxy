@@ -156,6 +156,15 @@
                     "$comment": "Unique identifier",
                     "type": "string"
                 },
+                "HDID": {
+                    "$comment": "Requesting user - for auditing/tracability",
+                    "type": "string",
+                    "maxLength": 54
+                },
+                "RequestingIP": {
+                    "$comment": "IP Address of the user requesting the data",
+                    "type": "string"
+                },
                 "startDate": {
                     "$ref": "#/definitions/DateType"
                 },
