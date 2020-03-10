@@ -151,14 +151,14 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
-        winston.info('RAW Response from the target: ' + stringify(proxyRes.headers));
+        logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
         // Delete set-cookie
         delete proxyRes.headers["set-cookie"];
     },
 
     // Listen for the `proxyReq` event on `proxy`.
     onProxyReq: function(proxyReq, req, res, options) {
-        winston.debug ('RAW proxyReq: ', stringify(proxyReq.headers));
+        logger.debug ('RAW proxyReq: ', stringify(proxyReq.headers));
         // Delete set-cookie
         delete proxyRes.headers["set-cookie"];
     }
@@ -191,7 +191,7 @@ function denyAccess(message, res, req) {
 function logSplunkError (message) {
 
     // log locally
-    winston.error(message);
+    logger.error(message);
 
     var body = JSON.stringify({
         message: message
@@ -235,7 +235,7 @@ function logSplunkError (message) {
 function logSplunkInfo (message) {
 
     // log locally
-    winston.info(message);
+    logger.info(message);
 
     var body = JSON.stringify({
         message: message
