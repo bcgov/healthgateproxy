@@ -27,12 +27,14 @@ var app = express();
 
 // Add status endpoint
 app.get('/status', function (req, res) {
-    logger.debug("/status: " + req.url);
+    logger.debug("/status: " + req.baseUrl + "/" + req.url );
     res.send("OK");
 });
 
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
+
+    logger.debug("incoming url: " + req.baseUrl + "/" + req.url );
     // Log it
     // logSplunkInfo("incoming: ", req.method, req.headers.host, req.url, res.statusCode, req.headers["x-authorization"]);
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
