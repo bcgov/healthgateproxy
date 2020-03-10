@@ -27,68 +27,71 @@ var app = express();
 
 // Add status endpoint
 app.get('/status', function (req, res) {
-    logger.debug("/status: " + req.baseUrl + "/" + req.url );
+    logger.debug("/status: " + req.url );
     res.send("OK");
 });
 
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
 
-    logger.debug("incoming url: " + req.baseUrl + "/" + req.url );
-    // Log it
-    // logSplunkInfo("incoming: ", req.method, req.headers.host, req.url, res.statusCode, req.headers["x-authorization"]);
-	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-      logSplunkInfo("incoming: " + req.url);
-	else
-	  logger.info("incoming: " + req.url);
-	// logSplunkInfo(" x-authorization: " + req.headers["x-authorization"]);
+    somePromise.then(() => {
+        // Log it
+        if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+            logSplunkInfo("incoming: " + req.url);
+        else
+            logger.info("incoming: " + req.url);
 
-    // Get authorization from browser
-    var authHeaderValue = req.headers["x-authorization"];
+        // Get authorization from browser
+        var authHeaderValue = req.headers["x-authorization"];
 
-    logger.debug("/ - authHeader value: " + authHeaderValue);
+        logger.debug("/ - authHeader value: " + authHeaderValue);
 
-    // Delete it because we add HTTP Basic later
-    delete req.headers["x-authorization"];
+        // Delete it because we add HTTP Basic later
+        delete req.headers["x-authorization"];
 
-    // Delete any attempts at cookies
-    delete req.headers["cookie"];
+        // Delete any attempts at cookies
+        delete req.headers["cookie"];
 
-    // Validate token if enabled
-    if (process.env.USE_AUTH_TOKEN &&
-        process.env.USE_AUTH_TOKEN == "true" &&
-        process.env.AUTH_TOKEN_KEY &&
-        process.env.AUTH_TOKEN_KEY.length > 0) {
+        // Validate token if enabled
+        if (process.env.USE_AUTH_TOKEN &&
+            process.env.USE_AUTH_TOKEN == "true" &&
+            process.env.AUTH_TOKEN_KEY &&
+            process.env.AUTH_TOKEN_KEY.length > 0) {
 
-        // Ensure we have a value
-        if (!authHeaderValue) {
-            denyAccess("missing header", res, req);
-            return;
+            // Ensure we have a value
+            if (!authHeaderValue) {
+                denyAccess("missing header", res, req);
+                return;
+            }
+
+            // Parse out the token
+            var token = authHeaderValue.replace("Bearer ", "");
+
+            if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
+                denyAccess("Missing or incorrect Bearer", res, req);
+                return;
+            }
+
+            // Check against the resource URL
+            // typical URL:
+            //    /healthgateproxy/...
+            var pathname = url.parse(req.url).pathname;
+            var pathnameParts = pathname.split("/");
+
+            // find the noun(s)
+            var nounIndex = pathnameParts.indexOf("healthgateproxy");
+            if (nounIndex < 0 || pathnameParts.length < nounIndex + 2) {
+                denyAccess("missing noun or resource id", res, req);
+                return;
+            }
         }
-
-        // Parse out the token
-        var token = authHeaderValue.replace("Bearer ", "");
-
-        if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
-            denyAccess("Missing or incorrect Bearer", res, req);
-            return;
-        }
-
-        // Check against the resource URL
-        // typical URL:
-        //    /healthgateproxy/...
-        var pathname = url.parse(req.url).pathname;
-        var pathnameParts = pathname.split("/");
-
-        // find the noun(s)
-        var nounIndex = pathnameParts.indexOf("healthgateproxy");
-        if (nounIndex < 0 || pathnameParts.length < nounIndex + 2) {
-            denyAccess("missing noun or resource id", res, req);
-            return;
-        }
-    }
-    // OK its valid let it pass thru this event
-    next(); // pass control to the next handler
+        // OK its valid let it pass thru this event
+        next(); // pass control to the next handler
+    })
+    .catch( (next) => {
+        logger.debug( "Error condition" + next.err );
+    });
+    
 });
 
 // Create new HTTPS.Agent for mutual TLS purposes
@@ -143,6 +146,7 @@ var proxy = proxy.createProxyMiddleware({
           logSplunkError("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
 		else
 		  logger.info("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
+        
         res.writeHead(500, {
             'Content-Type': 'text/plain'
         });
