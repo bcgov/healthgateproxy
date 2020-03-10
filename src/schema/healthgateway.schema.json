@@ -89,7 +89,8 @@
             "id": "#medicationRecords",
             "type": "array",
             "record": {
-                "dispenseId": {
+                "$comments": "This the ODR identifier (unique key)",
+                "recordId": {
                     "type": "string"
                 },
                 "$comment": "Date the prescription was dispensed",
@@ -102,14 +103,8 @@
                 "genericName": {
                     "type": "string"
                 },
-                "brandName": {
-                    "type": "string"
-                },
                 "practitioner": {
                     "$ref": "#name"
-                },
-                "dailyDosage": {
-                    "type": "string"
                 },
                 "quantity": {
                     "type": "string"
@@ -143,8 +138,8 @@
                 "rxStatus": {
                     "type": "string",
                     "enum": [
-                        "filled",
-                        "discontinued"
+                        "F",
+                        "D"
                     ]
                 }
             }
@@ -154,13 +149,13 @@
     "description": "Message structure for medication history request and response",
     "type": "object",
     "properties": {
-        "uuid": {
-            "$comment": "Unique identifier",
-            "type": "string"
-        },
         "getMedicationHistoryRequest": {
             "type": "object",
             "properties": {
+                "uuid": {
+                    "$comment": "Unique identifier",
+                    "type": "string"
+                },
                 "startDate": {
                     "$ref": "#/definitions/DateType"
                 },
@@ -184,32 +179,33 @@
                 }
             },
             "required": [
+                "uuid",
                 "phn"
             ]
         },
         "getMedicationHistoryResponse": {
             "type": "object",
             "properties": {
+                "uuid": {
+                    "$comment": "Unique identifier",
+                    "type": "string"
+                },
                 "records": {
                     "$comment": "Arrary of medication records",
                     "$ref": "#medicationRecords"
                 },
                 "totalrecords": {
-                    "$comment": "total number of medication records in this page",
+                    "$comment": "total number of medication records for the time frame without page limits",
                     "type": "integer"
                 },
-                "pageNumber": {
-                    "$comment": "Current page number",
-                    "$ref": "#/definitions/PageNumberType"
-                },
-                "numberOfPages": {
-                    "$comment": "Number of pages to be returned",
+                "totalPages": {
+                    "$comment": "Total number of page for data",
                     "type": "integer"
                 }
-            }
+            },
+            "required": [
+                "uuid"
+            ]
         }
-    },
-    "required": [
-        "uuid"
-    ]
+    }
 }
