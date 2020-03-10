@@ -3,199 +3,213 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "version": "1.0.0",
     "definitions": {
-      "DateType": {
-        "type": "string",
-        "pattern": "^[12][0-9]{3}-[01][0-9]-[0-3][0-9]$"
-      },
-      "PhnType": {
-        "type": "string",
-        "minLength": 9,
-        "maxLength": 9,
-        "pattern": "^[0-9]{9}$"
-      },
-      "PageSizeType": {
-        "type": "integer"
-      },
-      "PageNumberType": {
-        "type": "integer"
-      },
-      "OrderByType": {
-        "type": "string",
-        "enum": [
-          "asc",
-          "desc"
-        ]
-      },
-      "NameType": {
-        "id": "#name",
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "middleInit": {
-            "type": "string"
-          },
-          "LastName": {
-            "type": "string"
-          }
-        }
-      },
-      "AddressLineType": {
-        "type": "string",
-        "maxLength": 25
-      },
-      "AddressType": {
-        "id": "#address",
-        "type": "object",
-        "properties": {
-          "addrLine1": {
-            "$ref": "#/definitions/AddressLineType"
-          },
-          "addrLine2": {
-            "$ref": "#/definitions/AddressLineType"
-          },
-          "city": {
+        "DateType": {
+            "$comment": "Date as a string formatted YYYY-MM-DD",
             "type": "string",
-            "maxLength": 25
-          },
-          "province": {
+            "pattern": "^[12][0-9]{3}-[01][0-9]-[0-3][0-9]$"
+        },
+        "PhnType": {
+            "$comment": "Personal Health number",
             "type": "string",
-            "maxLength": 2
-          },
-          "country": {
-            "type": "string",
-            "maxLength": 3
-          },
-          "postalCode": {
-            "type": "string",
-            "maxLength": 25
-          }
-        }
-      },
-      "MedicationRecordsType": {
-        "id": "#medicationRecords",
-        "type": "array",
-        "record": {
-          "depenseId": {
-            "type": "string"
-          },
-          "$comment": "Date the prescription was dispensed",
-          "dateDispensed": {
-            "$ref": "#/definitions/DateType"
-          },
-          "rxNumber": {
-            "type": "string"
-          },
-          "genericName": {
-            "type": "string"
-          },
-          "practitioner": {
-            "$ref": "#name"
-          },
-          "quantity": {
-            "type": "string"
-          },
-          "refills": {
-            "type": "string"
-          },
-          "dinpin": {
-            "type": "string"
-          },
-          "dispensingPharmacy": {
-            "pharmacyId": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "siteAddress": {
-              "$ref": "#address"
-            },
-            "phoneNumber": {
-              "type": "string"
-            },
-            "faxNumber": {
-              "type": "string"
-            }
-          },
-          "directions": {
-            "type": "string"
-          },
-          "rxStatus": {
+            "minLength": 10,
+            "maxLength": 13,
+            "pattern": "^[0-9]*$"
+        },
+        "PageSizeType": {
+            "type": "integer"
+        },
+        "PageNumberType": {
+            "type": "integer"
+        },
+        "OrderByType": {
             "type": "string",
             "enum": [
-              "filled",
-              "discontinued"
+                "asc",
+                "desc"
             ]
-          }
+        },
+        "NameType": {
+            "id": "#name",
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 15,
+                    "pattern": "^[a-zA-Z][a-zA-Z\\-.\\' ]*$"
+                },
+                "middleInit": {
+                    "type": "string",
+                    "maxLength": 2
+                },
+                "LastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 25,
+                    "pattern": "^[a-zA-Z][a-zA-Z\\-.\\' ]*$"
+                }
+            },
+            "required": [ "firstName", "LastName" ]
+        },
+        "AddressLineType": {
+            "type": "string",
+            "maxLength": 25
+        },
+        "AddressType": {
+            "id": "#address",
+            "type": "object",
+            "properties": {
+                "addrLine1": {
+                    "$ref": "#/definitions/AddressLineType"
+                },
+                "addrLine2": {
+                    "$ref": "#/definitions/AddressLineType"
+                },
+                "city": {
+                    "type": "string",
+                    "maxLength": 25
+                },
+                "province": {
+                    "$comment": "Abbreviation for province (e.g. BC)",
+                    "type": "string",
+                    "maxLength": 2
+                },
+                "country": {
+                    "$comment": "Abbreviation for country (e.g. CAN)",
+                    "type": "string",
+                    "maxLength": 3
+                },
+                "postalCode": {
+                    "type": "string",
+                    "maxLength": 10
+                }
+            }
+        },
+        "MedicationRecordsType": {
+            "id": "#medicationRecords",
+            "type": "array",
+            "record": {
+                "dispenseId": {
+                    "type": "string"
+                },
+                "$comment": "Date the prescription was dispensed",
+                "dateDispensed": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "rxNumber": {
+                    "type": "string"
+                },
+                "genericName": {
+                    "type": "string"
+                },
+                "brandName": {
+                    "type": "string"
+                },
+                "practitioner": {
+                    "$ref": "#name"
+                },
+                "dailyDosage": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "string"
+                },
+                "refills": {
+                    "type": "string"
+                },
+                "dinpin": {
+                    "type": "string"
+                },
+                "dispensingPharmacy": {
+                    "pharmacyId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "siteAddress": {
+                        "$ref": "#address"
+                    },
+                    "phoneNumber": {
+                        "type": "string"
+                    },
+                    "faxNumber": {
+                        "type": "string"
+                    }
+                },
+                "directions": {
+                    "type": "string"
+                },
+                "rxStatus": {
+                    "type": "string",
+                    "enum": [
+                        "filled",
+                        "discontinued"
+                    ]
+                }
+            }
         }
-      }
     },
     "title": "HealthGateway",
+    "description": "Message structure for medication history request and response",
     "type": "object",
     "properties": {
-      "getMedicationHistoryRequest": {
-        "type": "object",
-        "properties": {
-          "uuid": {
+        "uuid": {
+            "$comment": "Unique identifier",
             "type": "string"
-          },
-          "startDate": {
-            "$ref": "#/definitions/DateType"
-          },
-          "endDate": {
-            "$ref": "#/definitions/DateType"
-          },
-          "phn": {
-            "$ref": "#/definitions/PhnType"
-          },
-          "pageSize": {
-            "$ref": "#/definitions/PageSizeType",
-            "default": 25
-          },
-          "pageNumber": {
-            "$ref": "#/definitions/PageNumberType",
-            "default": 1
-          },
-          "order": {
-            "$ref": "#/definitions/OrderByType",
-            "default": "desc"
-          }
         },
-        "required": [
-          "uuid",
-          "phn"
-        ]
-      },
-      "getMedicationHistoryResponse": {
-        "type": "object",
-        "properties": {
-          "uuid": {
-            "type": "string"
-          },
-          "medicationResultSet": {
-            "type": "array",
-            "pages": {
-              "records": {
-                "$ref": "#medicationRecords"
-              },
-              "totalrecords": {
-                "type": "integer"
-              },
-              "pageNumber": {
-                "$ref": "#/definitions/PageNumberType"
-              }
+        "getMedicationHistoryRequest": {
+            "type": "object",
+            "properties": {
+                "startDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "endDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "phn": {
+                    "$ref": "#/definitions/PhnType"
+                },
+                "pageSize": {
+                    "$ref": "#/definitions/PageSizeType",
+                    "default": 25
+                },
+                "pageNumber": {
+                    "$ref": "#/definitions/PageNumberType",
+                    "default": 1
+                },
+                "order": {
+                    "$ref": "#/definitions/OrderByType",
+                    "default": "desc"
+                }
+            },
+            "required": [
+                "phn"
+            ]
+        },
+        "getMedicationHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "$comment": "Arrary of medication records",
+                    "$ref": "#medicationRecords"
+                },
+                "totalrecords": {
+                    "$comment": "total number of medication records in this page",
+                    "type": "integer"
+                },
+                "pageNumber": {
+                    "$comment": "Current page number",
+                    "$ref": "#/definitions/PageNumberType"
+                },
+                "numberOfPages": {
+                    "$comment": "Number of pages to be returned",
+                    "type": "integer"
+                }
             }
-          },
-          "numberOfPages": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "uuid"
-        ]
-      }
+        }
     },
-	"required": [ "getMedicationHistoryRequest" ]
-  }
+    "required": [
+        "uuid"
+    ]
+}
