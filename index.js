@@ -31,7 +31,7 @@ var app = express();
 
 // Add status endpoint
 app.get('/status', function (req, res) {
-    res.send("OK - proxy running");
+    res.send("OK");
 });
 
 // Authorization, ALWAYS first
