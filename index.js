@@ -41,16 +41,21 @@ app.use('/', function (req, res, next) {
         else
             logger.info("incoming: " + req.url);
 
+
+        logger.debug("request header: " + req.headers);
+
         // Get authorization from browser
         var authHeaderValue = req.headers["x-authorization"];
 
-        logger.debug("/ - authHeader value: " + authHeaderValue);
 
-        // Delete it because we add HTTP Basic later
-        delete req.headers["x-authorization"];
+        // Delete only if headers exist
+        if (req.headers) {
+            // Delete it because we add HTTP Basic later
+            delete req.headers["x-authorization"];
 
-        // Delete any attempts at cookies
-        delete req.headers["cookie"];
+            // Delete any attempts at cookies
+            delete req.headers["cookie"];
+        }
 
         // Validate token if enabled
         if (process.env.USE_AUTH_TOKEN &&
