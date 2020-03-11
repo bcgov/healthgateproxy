@@ -94,6 +94,7 @@ app.use('/', function (req, res, next) {
                 return;
             }
         }
+        logger.debug("Passing to next handler");
         // OK its valid let it pass thru this event
         next(); // pass control to the next hanproviderdler
     } catch (e) {
