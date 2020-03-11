@@ -88,12 +88,17 @@ app.use('/', function (req, res, next) {
             }
         }
         // OK its valid let it pass thru this event
-        next(); // pass control to the next handler
+        next(); // pass control to the next hanproviderdler
     } catch (e) {
         logger.debug( "Error condition" + e);
+        res.writeHead(500, {
+            'Content-Type': 'text/plain'
+        });
+
+        res.end('Internal Error');
     };
     
-});
+});UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_PROTOCOL]
 
 // Create new HTTPS.Agent for mutual TLS purposes
 if (process.env.USE_MUTUAL_TLS &&
@@ -106,9 +111,9 @@ if (process.env.USE_MUTUAL_TLS &&
         cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
     };
     var myAgent = new https.Agent(httpsAgentOptions);
-}
+}UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_PROTOCOL]
 
-// verbose replacement
+// verbose replacementUnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_PROTOCOL]
 function logProvider() {
 	var myCustomProvider;
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
@@ -143,10 +148,10 @@ var proxy = proxy.createProxyMiddleware({
     logLevel: 'debug',
     logProvider: logProvider,
 
-    // Listen for the `error` event on `proxy`.
-    onError: function (err, req, res) {
+    // Listen for the `error` event on `proxy`.UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_PROTOCOL]
+    onError: function (err, req, res) {provider
 	    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-          logSplunkError("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
+          logSplunkError("proxy error: " + errprovider + "; req.url: " + req.url + "; status: " + res.statusCode);
 		else
 		  logger.info("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
         
