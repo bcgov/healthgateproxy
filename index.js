@@ -78,6 +78,8 @@ app.use('/', function (req, res, next) {
             var pathname = url.parse(req.url).pathname;
             var pathnameParts = pathname.split("/");
 
+            logger.debug("pathnameParts: " + pathnameParts);
+
             // find the noun(s)
             var nounIndex = pathnameParts.indexOf("healthgateproxy");
             if (nounIndex < 0 || pathnameParts.length < nounIndex + 2) {
@@ -96,6 +98,8 @@ app.use('/', function (req, res, next) {
 // Create new HTTPS.Agent for mutual TLS purposes
 if (process.env.USE_MUTUAL_TLS &&
     process.env.USE_MUTUAL_TLS == "true") {
+
+    logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
     var httpsAgentOptions = {
         key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
         passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
@@ -105,7 +109,7 @@ if (process.env.USE_MUTUAL_TLS &&
 }
 
 // verbose replacement
-function logProvider(provider) {
+function logProvider() {
 	var myCustomProvider;
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
       myCustomProvider = {
@@ -136,7 +140,7 @@ var proxy = proxy.createProxyMiddleware({
     keepAlive: true,
     changeOrigin: true,
     auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
-    logLevel: 'info',
+    logLevel: 'debug',
     logProvider: logProvider,
 
     // Listen for the `error` event on `proxy`.
@@ -274,7 +278,7 @@ function logSplunkInfo (message) {
 
     req.on('error', function (e) {
         console.error("error sending to splunk-forwarder: " + e.message);
-    });
+    });pathnameParts
 
     // write data to request body
     req.write(body);
