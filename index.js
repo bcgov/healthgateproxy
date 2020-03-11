@@ -154,7 +154,7 @@ function logProvider(provider) {
 // Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "https://localhost:3000",
-    agent: setHttpAgentOptions,
+    agent: setHttpAgentOptions(),
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
