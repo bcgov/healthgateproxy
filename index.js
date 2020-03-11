@@ -164,6 +164,7 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
+
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
         // Delete set-cookie
         delete proxyRes.headers["set-cookie"];
@@ -173,7 +174,7 @@ var proxy = proxy.createProxyMiddleware({
     onProxyReq: function(proxyReq, req, res, options) {
         logger.debug ('RAW proxyReq: ', stringify(proxyReq.headers));
         // Delete set-cookie
-        delete proxyRes.headers["set-cookie"];
+        delete proxyReq.headers["set-cookie"];
     }
 });
 
