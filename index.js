@@ -158,7 +158,7 @@ var proxy = proxy.createProxyMiddleware({
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-   // auth: process.env.TARGET_USERNAME_PASSWORD || "username:passsetHttpAgentOptionsword",
+    auth: process.env.TARGET_USERNAME_PASSWORD || "username:passsetHttpAgentOptionsword",
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
