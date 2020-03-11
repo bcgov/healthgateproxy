@@ -68,12 +68,12 @@ app.use('/', function (req, res, next) {
             // Ensure we have a value
             if (!authHeaderValue) {
                 denyAccess("missing header", res, req);
-                return;USE_MUTUAL_TLSUSE_MUTUAL_TLS
+                return;
             }
 
-            // Parse out the tokenUSE_MUTUAL_TLS
+            // Parse out the token
             var token = authHeaderValue.replace("Bearer ", "");
-            USE_MUTUAL_TLS
+
             if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
                 denyAccess("Missing or incorrect Bearer", res, req);
                 return;
@@ -81,18 +81,18 @@ app.use('/', function (req, res, next) {
 
             // Check against the resource URL
             // typical URL:
-            //    /healthgateproxy/...USE_MUTUAL_TLSUSE_MUTUAL_TLS
+            //    /healthgateproxy/...
             var pathname = url.parse(req.url).pathname;
             var pathnameParts = pathname.split("/");
 
             logger.debug("pathnameParts: " + pathnameParts);
 
-            // find the noun(s)USE_MUTUAL_TLS
+            // find the noun(s)
             var nounIndex = pathnameParts.indexOf("healthgateproxy");
             if (nounIndex < 0 || pathnameParts.length < nounIndex + 2) {
                 denyAccess("missing noun or resource id", res, req);
                 return;
-            }USE_MUTUAL_TLS
+            }
         }
         // OK its valid let it pass thru this event
         next(); // pass control to the next hanproviderdler
@@ -119,7 +119,7 @@ if (process.env.USE_MUTUAL_TLS &&
         key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
         passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
         cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
-    };USE_MUTUAL_TLS
+    };
     myAgent = new https.Agent(httpsAgentOptions);
 }
 
@@ -137,7 +137,7 @@ function logProvider(provider) {
 	}
 	else {
       myCustomProvider = {
-        log: logger.log,USE_MUTUAL_TLS
+        log: logger.log,
         debug: logger.debug,
         info: logger.info,
         warn: logger.warn,
