@@ -166,15 +166,23 @@ var proxy = proxy.createProxyMiddleware({
     onProxyRes: function (proxyRes, req, res) {
 
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
-        // Delete set-cookie
-        delete proxyRes.headers["set-cookie"];
+
+        // Delete "set-cookie" from header if it exists
+        if (proxyRes.headers) {
+            // Delete set-cookie
+            delete proxyRes.headers["set-cookie"];
+        }
     },
 
     // Listen for the `proxyReq` event on `proxy`.
     onProxyReq: function(proxyReq, req, res, options) {
         logger.debug ('RAW proxyReq: ', stringify(proxyReq.headers));
-        // Delete set-cookie
-        delete proxyReq.headers["set-cookie"];
+
+        // Delete "set-cookie" from header if it exists
+        if (proxyReq.headers) {
+            // Delete set-cookie
+            delete proxyReq.headers["set-cookie"];
+        }
     }
 });
 
