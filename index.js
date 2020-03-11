@@ -148,6 +148,7 @@ var proxy = proxy.createProxyMiddleware({
     // Listen for the `proxyReq` event on `proxy`.
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
+        logger.debug("req: " + stringify(req));
 
         // Alter header before sent
         if (proxyReq.headers) {
@@ -160,6 +161,8 @@ var proxy = proxy.createProxyMiddleware({
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
         }
+        logger.debug("Modified proxyReq: ", stringify(proxyReq.headers));
+        logger.debug("Modified req: " + stringify(req));
     }
 });
 
