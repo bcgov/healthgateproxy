@@ -109,6 +109,9 @@ function logProvider(provider) {
 	return myCustomProvider;
 }
 
+var userauth = 'Basic ' + Buffer.from( process.env.TARGET_USERNAME_PASSWORD, 'base64' );
+
+
 // Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "https://localhost:3000",
@@ -116,7 +119,11 @@ var proxy = proxy.createProxyMiddleware({
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-    // auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
+    //auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
+    headers: {
+        hostname: process.env.TARGET_URL,
+        "Proxy-Authorization: ": userauth
+    },
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
@@ -148,21 +155,20 @@ var proxy = proxy.createProxyMiddleware({
     // Listen for the `proxyReq` event on `proxy`.
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("req: " + stringify(req));
 
         // Alter header before sent
         if (proxyReq.headers) {
+            logger.debug( 'header has: ' + proxyReq.headers["x-authorization"] + ", " + proxyReq.headers["cookie"]);
+        
            // Delete it because we add HTTPs Basic later
-           delete req.headers["x-authorization"];
+           delete proxyReq.headers["x-authorization"];
 
            // Delete any attempts at cookies
-           delete req.headers["cookie"];
+           delete proxyReq.headers["cookie"];
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
         }
-        logger.debug("Modified proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("Modified req: " + stringify(req));
     }
 });
 
