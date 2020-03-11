@@ -113,16 +113,10 @@ function setHttpsAgentOptions() {
 }
 
 
-// verbose replacement        if (process.env.USE_AUTH_TOKEN &&
-            process.env.USE_AUTH_TOKEN == "true" &&
-            process.env.AUTH_TOKEN_KEY &&
-            process.env.AUTH_TOKEN_KEY.length > 0) {
+// verbose replacement
 function logProvider(provider) {
 	var myCustomProvider;
-	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK        if (process.env.USE_AUTH_TOKEN &&
-        process.env.USE_AUTH_TOKEN == "true" &&
-        process.env.AUTH_TOKEN_KEY &&
-        process.env.AUTH_TOKEN_KEY.length > 0) { == "true") {
+	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
       myCustomProvider = {
         log: logger.log,
         debug: logger.debug,
@@ -150,7 +144,7 @@ var proxy = proxy.createProxyMiddleware({
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-    auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
+    // auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
