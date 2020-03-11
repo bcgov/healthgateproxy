@@ -32,7 +32,7 @@ app.get('/status', function (req, res) {
 });
 
 // Authorization, ALWAYS first
-/*app.use('/', function (req, res, next) {
+app.use('/', function (req, res, next) {
 
     logger.debug("request protocol: " + req.url.http  + " " + req.url.https);
 
@@ -43,16 +43,12 @@ app.get('/status', function (req, res) {
         else
             logger.info("incoming: " + req.url);
 
-
-        logger.debug("request header: " + req.headers);
-
         // Get authorization from browser
         var authHeaderValue = req.headers["x-authorization"];
 
-
         // Delete only if headers exist
         if (req.headers) {
-            // Delete it because we add HTTP Basic later
+            // Delete it because we add HTTPs Basic later
             delete req.headers["x-authorization"];
 
             // Delete any attempts at cookies
@@ -80,6 +76,7 @@ app.get('/status', function (req, res) {
             }
         }
         logger.debug("Passing to next handler");
+
         // OK its valid let it pass thru this event
         next(); // pass control to the next hanproviderdler
     } catch (e) {
@@ -91,13 +88,17 @@ app.get('/status', function (req, res) {
         res.end('Internal Error');
     };
     
-}); */
+});
 
 function setHttpsAgentOptions() {
 
     logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
 
-    // Create new HTTPS.Agent for mutual TLS purposes
+    // Create new HTTPS.Agent for mutu        // Log it
+        if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+        logSplunkInfo("incoming: " + req.url);
+    else
+        logger.info("incoming: " + req.url);
     if (process.env.USE_MUTUAL_TLS &&
         process.env.USE_MUTUAL_TLS == "true") {
 
@@ -148,7 +149,7 @@ var proxy = proxy.createProxyMiddleware({
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
-        '^/healthgateway/api/' : '/ords/edwdev1/pgw/medHist/'
+        '^/healthgateway/' : '/ords/edwdev1/pgw/medHist/'
     },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -178,7 +179,7 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyReq` event on `proxy`.
     onProxyReq: function(proxyReq, req, res, options) {
-        logger.debug ('RAW proxyReq: ', stringify(proxyReq.headers));
+        logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
 
         // Delete "set-cookie" from header if it exists
         if (proxyReq.headers) {
