@@ -181,7 +181,7 @@ var proxy = proxy.createProxyMiddleware({
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
 
-        logger.info('RAW Response from the target: ' + stringify(psetHttpAgentOptionsroxyRes.headers));
+        logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
