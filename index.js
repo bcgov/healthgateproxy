@@ -4,7 +4,6 @@
 var https = require('https'),
     http = require('http'),
     winston = require('winston'),
-    url = require('url'),
     stringify = require('json-stringify-safe'),
     express = require('express'),
     moment = require('moment');
