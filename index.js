@@ -107,7 +107,7 @@ app.use('/', function (req, res, next) {
     
 });
 
-function setHttpAgentOptions() {
+function setHttpsAgentOptions() {
 
     logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
 
@@ -154,7 +154,7 @@ function logProvider(provider) {
 // Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "https://localhost:3000",
-    agent: setHttpAgentOptions(),
+    agent: setHttpsAgentOptions(),
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
