@@ -107,22 +107,6 @@ app.use('/', function (req, res, next) {
     
 });
 
-// Default when USE_MUTUAL_TLS not set
-var myAgent = new https.Agent();
-
-// Create new HTTPS.Agent for mutual TLS purposes
-if (process.env.USE_MUTUAL_TLS &&
-    process.env.USE_MUTUAL_TLS == "true") {
-
-    logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
-    var httpsAgentOptions = {
-        key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
-        passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
-        cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
-    };
-    myAgent = new https.Agent(httpsAgentOptions);
-}
-
 // verbose replacement
 function logProvider(provider) {
 	var myCustomProvider;
@@ -149,8 +133,24 @@ function logProvider(provider) {
 
 // Create a HTTP Proxy server with a HTTPS target
 var proxy = proxy.createProxyMiddleware({
-    target: process.env.TARGET_URL || "http://localhost:3000",
-    agent: myAgent || http.globalAgent,
+    target: process.env.TARGET_URL || "https://localhost:3000",
+    agent: function( ) {
+
+        // Create new HTTPS.Agent for mutual TLS purposes
+        if (process.env.USE_MUTUAL_TLS &&
+            process.env.USE_MUTUAL_TLS == "true") {
+
+            logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
+            var httpsAgentOptions = {
+                key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
+                passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
+                cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
+            };
+           return new https.Agent(httpsAgentOptions);
+        }
+        // Default when USE_MUTUAL_TLS not set
+        return new https.Agent();
+    },
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
