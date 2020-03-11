@@ -20,19 +20,20 @@ All configuration is done via a user's shell environment variable and read in No
 
 Name | Description
 --- | --- 
-TARGET_URL | Base URL to send HTTP request
-TARGET_HEADER_HOST | Host header to send
-TARGET_USERNAME_PASSWORD | For HTTP Basic the username:password
+TARGET_URL | Base URL to send HTTPS request
+TARGET_USERNAME_PASSWORD | For HTTPS Basic the username:password
+USE_MUTUAL_TLS | Turns on and off Mutual TLS to target.  Always `true` unless you are debugging
 MUTUAL_TLS_PEM_KEY_BASE64 | A base64 encoded PEM key string
 MUTUAL_TLS_PEM_KEY_PASSPHRASE | The passphrase for the above PEM key
 MUTUAL_TLS_PEM_CERT | The client certificate for the above KEY in a base64 encoded PEM format
 SECURE_MODE | Insecure mode allows untrusted targets.  Always `true` unless you are debugging
-USE_MUTUAL_TLS | Turns on and off Mutual TLS to target.  Always `true` unless you are debugging
+USE_AUTH_TOKEN | Use Auth Token in all SSL. If true must configure AUTH_TOKEN_KEY
 AUTH_TOKEN_KEY | Authentication Key used in all SSL
-USE_AUTH_TOKEN | Use Auth Token in all SSL
+USE_SPLUNK | Turns on and off loggging to Splunk Forwarder, If true, must configure LOGGER_HOST, LOGGER_PORT and SPLUNK_AUTH_TOKEN
 LOGGER_HOST | Host name for the Splunk Forwarder
 LOGGER_PORT | Port for the Splunk Forwarder
 SPLUNK_AUTH_TOKEN | Authorization token required to use the splunk server
+
 
 
 ## Crypto Tips
