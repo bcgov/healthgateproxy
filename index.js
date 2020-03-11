@@ -32,7 +32,7 @@ app.get('/status', function (req, res) {
 });
 
 // Authorization, ALWAYS first
-app.use('/', function (req, res, next) {
+/*app.use('/', function (req, res, next) {
 
     logger.debug("request protocol: " + req.url.http  + " " + req.url.https);
 
@@ -78,21 +78,6 @@ app.use('/', function (req, res, next) {
                 denyAccess("Missing or incorrect Bearer", res, req);
                 return;
             }
-
-            // Check against the resource URL
-            // typical URL:
-            //    /healthgateproxy/...
-            var pathname = url.parse(req.url).pathname;
-            var pathnameParts = pathname.split("/");
-
-            logger.debug("pathnameParts: " + pathnameParts);
-
-            // find the noun(s)
-            var nounIndex = pathnameParts.indexOf("healthgateproxy");
-            if (nounIndex < 0 || pathnameParts.length < nounIndex + 2) {
-                denyAccess("missing noun or resource id", res, req);
-                return;
-            }
         }
         logger.debug("Passing to next handler");
         // OK its valid let it pass thru this event
@@ -106,7 +91,7 @@ app.use('/', function (req, res, next) {
         res.end('Internal Error');
     };
     
-});
+}); */
 
 function setHttpsAgentOptions() {
 
@@ -128,10 +113,16 @@ function setHttpsAgentOptions() {
 }
 
 
-// verbose replacement
+// verbose replacement        if (process.env.USE_AUTH_TOKEN &&
+            process.env.USE_AUTH_TOKEN == "true" &&
+            process.env.AUTH_TOKEN_KEY &&
+            process.env.AUTH_TOKEN_KEY.length > 0) {
 function logProvider(provider) {
 	var myCustomProvider;
-	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
+	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK        if (process.env.USE_AUTH_TOKEN &&
+        process.env.USE_AUTH_TOKEN == "true" &&
+        process.env.AUTH_TOKEN_KEY &&
+        process.env.AUTH_TOKEN_KEY.length > 0) { == "true") {
       myCustomProvider = {
         log: logger.log,
         debug: logger.debug,
@@ -159,11 +150,11 @@ var proxy = proxy.createProxyMiddleware({
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-    auth: process.env.TARGET_USERNAME_PASSWORD || "username:passsetHttpAgentOptionsword",
+    auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
-        '^/healthgateproxy/api/' : '/ords/edwdev1/pgw/medHist/'
+        '^/healthgateway/api/' : '/ords/edwdev1/pgw/medHist/'
     },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
