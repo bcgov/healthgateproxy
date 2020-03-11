@@ -158,10 +158,12 @@ var proxy = proxy.createProxyMiddleware({
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-   // auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
+   // auth: process.env.TARGET_USERNAME_PASSWORD || "username:passsetHttpAgentOptionsword",
     logLevel: 'debug',
     logProvider: logProvider,
-
+    pathRewrite: {
+        '^/' : '/ords/edwdev1/pgw/medHist/'
+    },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
 	    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
@@ -179,7 +181,7 @@ var proxy = proxy.createProxyMiddleware({
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
 
-        logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
+        logger.info('RAW Response from the target: ' + stringify(psetHttpAgentOptionsroxyRes.headers));
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
