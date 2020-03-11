@@ -136,11 +136,12 @@ var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "https://localhost:3000",
     agent: function( ) {
 
+        logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
+
         // Create new HTTPS.Agent for mutual TLS purposes
         if (process.env.USE_MUTUAL_TLS &&
             process.env.USE_MUTUAL_TLS == "true") {
 
-            logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
             var httpsAgentOptions = {
                 key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
                 passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
