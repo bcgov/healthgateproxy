@@ -4,7 +4,6 @@
 var https = require('https'),
     http = require('http'),
     winston = require('winston'),
-    url = require('url'),
     stringify = require('json-stringify-safe'),
     express = require('express'),
     moment = require('moment');
@@ -34,60 +33,40 @@ app.get('/status', function (req, res) {
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
 
-    logger.debug("request protocol: " + req.url.http  + " " + req.url.https);
+    // Log it
+    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
+        logSplunkInfo("incoming: " + req.url);
+    else
+        logger.info("incoming: " + req.url);
 
-    try {
-        // Log it
-        if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-            logSplunkInfo("incoming: " + req.url);
-        else
-            logger.info("incoming: " + req.url);
+    // Validate token if enabled
+    if (process.env.USE_AUTH_TOKEN &&
+        process.env.USE_AUTH_TOKEN == "true" &&
+        process.env.AUTH_TOKEN_KEY &&
+        process.env.AUTH_TOKEN_KEY.length > 0) {
 
         // Get authorization from browser
         var authHeaderValue = req.headers["x-authorization"];
 
-        // Delete only if headers exist
-        if (req.headers) {
-            // Delete it because we add HTTPs Basic later
-            delete req.headers["x-authorization"];
-
-            // Delete any attempts at cookies
-            delete req.headers["cookie"];
+        // Ensure we have a value
+        if (!authHeaderValue) {
+            denyAccess("missing header", res, req);
+            return;
         }
 
-        // Validate token if enabled
-        if (process.env.USE_AUTH_TOKEN &&
-            process.env.USE_AUTH_TOKEN == "true" &&
-            process.env.AUTH_TOKEN_KEY &&
-            process.env.AUTH_TOKEN_KEY.length > 0) {
+        // Parse out the token
+        var token = authHeaderValue.replace("Bearer ", "");
 
-            // Ensure we have a value
-            if (!authHeaderValue) {
-                denyAccess("missing header", res, req);
-                return;
-            }
-
-            // Parse out the token
-            var token = authHeaderValue.replace("Bearer ", "");
-
-            if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
-                denyAccess("Missing or incorrect Bearer", res, req);
-                return;
-            }
+        // Compare auth token passed to the one in environment
+        if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
+            denyAccess("Missing or incorrect Bearer", res, req);
+            return;
         }
-        logger.debug("Passing to next handler");
+    }
+    logger.debug("Passing to next handler");
 
-        // OK its valid let it pass thru this event
-        next(); // pass control to the next handler
-    } catch (e) {
-        logger.debug( "Error condition" + e);
-        res.writeHead(500, {
-            'Content-Type': 'text/plain'
-        });
-
-        res.end('Internal Error');
-    };
-    
+    // OK its valid let it pass thru this event
+    next(); // pass control to the next handler
 });
 
 function setHttpsAgentOptions() {
@@ -178,11 +157,17 @@ var proxy = proxy.createProxyMiddleware({
     },
 
     // Listen for the `proxyReq` event on `proxy`.
-    onProxyReq: function(proxyReq, req, res, options) {
+    onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
 
-        // Delete "set-cookie" from header if it exists
+        // Alter header before sent
         if (proxyReq.headers) {
+           // Delete it because we add HTTPs Basic later
+           delete req.headers["x-authorization"];
+
+           // Delete any attempts at cookies
+           delete req.headers["cookie"];
+
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
         }
