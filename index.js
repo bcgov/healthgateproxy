@@ -159,7 +159,7 @@ var proxy = proxy.createProxyMiddleware({
     logProvider: logProvider,
 
     // Listen for the `error` event on `proxy`.
-    onError: function (err, req, res) {provider
+    onError: function (err, req, res) {
 	    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
           logSplunkError("proxy error: " + errprovider + "; req.url: " + req.url + "; status: " + res.statusCode);
 		else
