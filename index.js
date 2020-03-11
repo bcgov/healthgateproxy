@@ -34,6 +34,8 @@ app.get('/status', function (req, res) {
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
 
+    logger.debug("request protocol: " + req.url.http || requestAnimationFrame.url.https);
+
     try {
         // Log it
         if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
