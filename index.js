@@ -114,7 +114,7 @@ if (process.env.USE_MUTUAL_TLS &&
 }
 
 // verbose replacement
-function logProvider() {
+function logProvider(provider) {
 	var myCustomProvider;
 	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
       myCustomProvider = {
