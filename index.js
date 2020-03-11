@@ -27,14 +27,14 @@ var app = express();
 
 // Add status endpoint
 app.get('/status', function (req, res) {
-    logger.debug("/status: " + req.url );
+    logger.debug("/status: ");
     res.send("OK");
 });
 
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
 
-    logger.debug("request protocol: " + req.url.http || requestAnimationFrame.url.https);
+    logger.debug("request protocol: " + req.url.http  + " " + req.url.https);
 
     try {
         // Log it
@@ -107,6 +107,9 @@ app.use('/', function (req, res, next) {
     
 });
 
+// Default when USE_MUTUAL_TLS not set
+var myAgent = new https.Agent();
+
 // Create new HTTPS.Agent for mutual TLS purposes
 if (process.env.USE_MUTUAL_TLS &&
     process.env.USE_MUTUAL_TLS == "true") {
@@ -117,7 +120,7 @@ if (process.env.USE_MUTUAL_TLS &&
         passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
         cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
     };
-    var myAgent = new https.Agent(httpsAgentOptions);
+    myAgent = new https.Agent(httpsAgentOptions);
 }
 
 // verbose replacement
