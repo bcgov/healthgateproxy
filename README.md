@@ -21,7 +21,7 @@ All configuration is done via a user's shell environment variable and read in No
 Name | Description
 --- | --- 
 TARGET_URL | Base URL to send HTTPS request
-TARGET_USERNAME_PASSWORD | For HTTPS Basic the username:password
+TARGET_USERNAME_PASSWORD | For HTTPS Basic the username:password, leave blank for no basic
 USE_MUTUAL_TLS | Turns on and off Mutual TLS to target.  Always `true` unless you are debugging
 MUTUAL_TLS_PEM_KEY_BASE64 | A base64 encoded PEM key string
 MUTUAL_TLS_PEM_KEY_PASSPHRASE | The passphrase for the above PEM key

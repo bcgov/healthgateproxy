@@ -153,7 +153,7 @@ var proxy = proxy.createProxyMiddleware({
      */
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("req body: " + stringify(req.body));
+        logger.debug("req: " + stringify(req));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
