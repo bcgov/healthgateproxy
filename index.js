@@ -152,25 +152,29 @@ var proxy = proxy.createProxyMiddleware({
         }
     },
 
-    // Listen for the `proxyReq` event on `proxy`.
+    /* Listen for the `proxyReq` event on `proxy`.
+     * This event is emitted before the data is sent.
+     * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
+     */
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-
-        if (req.headers) {
-            logger.debug( 'header has: ' + req.headers["x-authorization"] + ", " + req.headers["cookie"]);
-
-            // Delete it because we add HTTPs Basic later
-            delete req.headers["x-authorization"];
-
-            // Delete any attempts at cookies
-            delete req.headers["cookie"];
-        }
 
         // Alter header before sent
         if (proxyReq.headers) {
 
+            // Delete it because we add HTTPs Basic later
+            delete proxyReq.headers["x-authorization"];
+
+            // Delete any attempts at cookies
+            delete proxyReq.headers["cookie"];
+
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
+        }
+
+        if (process.env.TARGET_USERNAME_PASSWORD && process.env.TARGET_USERNAME_PASSWORD.length > 0) {
+            proxyReq.setHeader("Proxy-Authorization", "Basic " + process.env.TARGET_USERNAME_PASSWORD);
+            logger.debug("Modified proxyReq: ", stringify(proxyReq.headers));
         }
     }
 });
