@@ -109,7 +109,7 @@ function logProvider(provider) {
 	return myCustomProvider;
 }
 
-var userauth = 'Basic ' + Buffer.from( process.env.TARGET_USERNAME_PASSWORD, 'base64' );
+// var userauth = 'Basic ' + Buffer.from( process.env.TARGET_USERNAME_PASSWORD, 'base64' );
 
 
 // Create a HTTPS Proxy server with a HTTPS targets
@@ -120,10 +120,10 @@ var proxy = proxy.createProxyMiddleware({
     keepAlive: true,
     changeOrigin: true,
     //auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
-    headers: {
+/*    headers: {
         hostname: process.env.TARGET_URL,
         "Proxy-Authorization: ": userauth
-    },
+    },*/
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
