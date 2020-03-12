@@ -24,8 +24,8 @@
         "OrderByType": {
             "type": "string",
             "enum": [
-                "asc",
-                "desc"
+                "ASC",
+                "DESC"
             ]
         },
         "NameType": {
@@ -184,7 +184,7 @@
                 },
                 "order": {
                     "$ref": "#/definitions/OrderByType",
-                    "default": "desc"
+                    "default": "DESC"
                 }
             },
             "required": [
