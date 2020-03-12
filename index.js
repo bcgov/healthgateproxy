@@ -3,12 +3,7 @@
 
 var https = require('https'),
     http = require('http'),
-    util = require('util'),
-    path = require('path'),
-    fs = require('fs'),
-    colors = require('colors'),
     winston = require('winston'),
-    url = require('url'),
     stringify = require('json-stringify-safe'),
     express = require('express'),
     moment = require('moment');
@@ -18,7 +13,7 @@ var https = require('https'),
 // create winston logger
 //
 const logger = winston.createLogger({
-   // level: 'info',
+   // level: 'debug',
    // format: winston.format.simple(),
    // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
@@ -36,28 +31,18 @@ app.get('/status', function (req, res) {
 
 // Authorization, ALWAYS first
 app.use('/', function (req, res, next) {
+
     // Log it
-    // logSplunkInfo("incoming: ", req.method, req.headers.host, req.url, res.statusCode, req.headers["x-authorization"]);
-	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-      logSplunkInfo("incoming: " + req.url);
-	else
-	  logger.info("incoming: " + req.url);
-	// logSplunkInfo(" x-authorization: " + req.headers["x-authorization"]);
-
-    // Get authorization from browser
-    var authHeaderValue = req.headers["x-authorization"];
-
-    // Delete it because we add HTTP Basic later
-    delete req.headers["x-authorization"];
-
-    // Delete any attempts at cookies
-    delete req.headers["cookie"];
+    log("incoming: " + req.url);
 
     // Validate token if enabled
     if (process.env.USE_AUTH_TOKEN &&
         process.env.USE_AUTH_TOKEN == "true" &&
         process.env.AUTH_TOKEN_KEY &&
         process.env.AUTH_TOKEN_KEY.length > 0) {
+
+        // Get authorization from browser
+        var authHeaderValue = req.headers["x-authorization"];
 
         // Ensure we have a value
         if (!authHeaderValue) {
@@ -68,38 +53,36 @@ app.use('/', function (req, res, next) {
         // Parse out the token
         var token = authHeaderValue.replace("Bearer ", "");
 
+        // Compare auth token passed to the one in environment
         if ( token == null || token.length == 0 || token != process.env.AUTH_TOKEN_KEY ) {
             denyAccess("Missing or incorrect Bearer", res, req);
             return;
         }
-
-        // Check against the resource URL
-        // typical URL:
-        //    /healthgateproxy/...
-        var pathname = url.parse(req.url).pathname;
-        var pathnameParts = pathname.split("/");
-
-        // find the noun(s)
-        var nounIndex = pathnameParts.indexOf("healthgateproxy");
-        if (nounIndex < 0 || pathnameParts.length < nounIndex + 2) {
-            denyAccess("missing noun or resource id", res, req);
-            return;
-        }
     }
+    logger.debug("Passing to next handler");
+
     // OK its valid let it pass thru this event
     next(); // pass control to the next handler
 });
 
-// Create new HTTPS.Agent for mutual TLS purposes
-if (process.env.USE_MUTUAL_TLS &&
-    process.env.USE_MUTUAL_TLS == "true") {
-    var httpsAgentOptions = {
-        key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
-        passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
-        cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
-    };
-    var myAgent = new https.Agent(httpsAgentOptions);
+function setHttpsAgentOptions() {
+
+    logger.debug("USE_MUTUAL_TLS: " + process.env.USE_MUTUAL_TLS);
+
+    if (process.env.USE_MUTUAL_TLS &&
+        process.env.USE_MUTUAL_TLS == "true") {
+
+        var httpsAgentOptions = {
+            key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
+            passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
+            cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
+        };
+        return new https.Agent(httpsAgentOptions);
+    }
+    // Default when USE_MUTUAL_TLS not set
+    return new https.Agent();
 }
+
 
 // verbose replacement
 function logProvider(provider) {
@@ -125,23 +108,24 @@ function logProvider(provider) {
 	return myCustomProvider;
 }
 
-// Create a HTTP Proxy server with a HTTPS target
+// Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
-    target: process.env.TARGET_URL || "http://localhost:3000",
-    agent: myAgent || http.globalAgent,
+    target: process.env.TARGET_URL || "https://localhost:3000",
+    agent: setHttpsAgentOptions(),
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-    auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
+    // Basic authentication
+    auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: 'info',
     logProvider: logProvider,
-
+    pathRewrite: {
+        '^/healthgateway/' : '/ords/edwdev1/pgw/medHist/'
+    },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
-	    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-          logSplunkError("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
-		else
-		  logger.info("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode);
+        log("proxy error: " + errprovider + "; req.url: " + req.url + "; status: " + res.statusCode, true);
+        
         res.writeHead(500, {
             'Content-Type': 'text/plain'
         });
@@ -151,16 +135,42 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
-        winston.info('RAW Response from the target: ' + stringify(proxyRes.headers));
-        // Delete set-cookie
-        delete proxyRes.headers["set-cookie"];
+        logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
+
+        // Delete "set-cookie" from header if it exists
+        if (proxyRes.headers) {
+            // Delete set-cookie
+            delete proxyRes.headers["set-cookie"];
+        }
     },
 
-    // Listen for the `proxyReq` event on `proxy`.
-    onProxyReq: function(proxyReq, req, res, options) {
-        winston.debug ('RAW proxyReq: ', stringify(proxyReq.headers));
-        // Delete set-cookie
-        delete proxyRes.headers["set-cookie"];
+    /* Listen for the `proxyReq` event on `proxy`.
+     * This event is emitted before the data is sent.
+     * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
+     */
+    onProxyReq: function(proxyReq, req, res) {
+        logger.info("RAW proxyReq: ", stringify(proxyReq.headers));
+
+        if (req.headers) {
+            // Delete it because we add HTTPs Basic later
+            delete req.headers["x-authorization"];
+
+            // Delete any attempts at cookies
+            delete req.headers["cookie"];
+
+        }
+
+        // Alter header before sent
+        if (proxyReq.headers) {
+            // Delete it because we add HTTPs Basic later
+            delete proxyReq.headers["x-authorization"];
+
+            // Delete any attempts at cookies
+            delete proxyReq.headers["cookie"];
+
+            // Delete set-cookie
+            delete proxyReq.headers["set-cookie"];
+        }
     }
 });
 
@@ -171,6 +181,22 @@ app.use('/', proxy);
 app.listen(8080);
 
 
+// Wrapper for logging - keep environment checks to single location
+function log( message, isError = false ) {
+    if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true") {
+
+        if (isError) {
+            logSplunkError(message);
+        } else {
+            logSplunkInfo(message)
+        }
+
+    } else {
+        logger.info( message );
+    }
+}
+
+
 /**
  * General deny access handler
  * @param message
@@ -179,10 +205,7 @@ app.listen(8080);
  */
 function denyAccess(message, res, req) {
 
-	if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-      logSplunkError(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers));
-	else
-      logger.info(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers));
+    log(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers), true);
 
     res.writeHead(401);
     res.end();
@@ -191,7 +214,7 @@ function denyAccess(message, res, req) {
 function logSplunkError (message) {
 
     // log locally
-    winston.error(message);
+    logger.error(message);
 
     var body = JSON.stringify({
         message: message
@@ -235,7 +258,7 @@ function logSplunkError (message) {
 function logSplunkInfo (message) {
 
     // log locally
-    winston.info(message);
+    logger.info(message);
 
     var body = JSON.stringify({
         message: message
@@ -270,15 +293,12 @@ function logSplunkInfo (message) {
 
     req.on('error', function (e) {
         console.error("error sending to splunk-forwarder: " + e.message);
-    });
+    });pathnameParts
 
     // write data to request body
     req.write(body);
     req.end();
 }
 
-if (process.env.USE_SPLUNK && process.env.USE_SPLUNK == "true")
-  logSplunkInfo('healthgateproxy service started on port 8080');
-else
-  logger.info('healthgateproxy service started on port 8080');
+log('healthgateproxy service started on port 8080');
 
