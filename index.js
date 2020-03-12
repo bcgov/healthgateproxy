@@ -156,15 +156,18 @@ var proxy = proxy.createProxyMiddleware({
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
 
+        if (req.headers) {
+            logger.debug( 'header has: ' + proxyReq.headers["x-authorization"] + ", " + proxyReq.headers["cookie"]);
+
+            // Delete it because we add HTTPs Basic later
+            delete proxyReq.headers["x-authorization"];
+
+            // Delete any attempts at cookies
+            delete proxyReq.headers["cookie"];
+        }
+
         // Alter header before sent
         if (proxyReq.headers) {
-            logger.debug( 'header has: ' + proxyReq.headers["x-authorization"] + ", " + proxyReq.headers["cookie"]);
-        
-           // Delete it because we add HTTPs Basic later
-           delete proxyReq.headers["x-authorization"];
-
-           // Delete any attempts at cookies
-           delete proxyReq.headers["cookie"];
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
