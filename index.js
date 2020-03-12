@@ -138,7 +138,7 @@ var proxy = proxy.createProxyMiddleware({
     onProxyRes: function (proxyRes, req, res) {
 
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
-        logger.debug("resp: ", stringify(res));
+        logger.debug("resp: ", stringify(proxyRes.Buffer.body));
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
@@ -153,7 +153,7 @@ var proxy = proxy.createProxyMiddleware({
      */
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("req: " + stringify(req));
+        logger.debug("req: " + stringify(req.Buffer.body));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
