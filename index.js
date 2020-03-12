@@ -120,7 +120,7 @@ var proxy = proxy.createProxyMiddleware({
     logLevel: 'info',
     logProvider: logProvider,
     pathRewrite: {
-        '^/healthgateway/' : '/ords/edwdev1/pgw/medHist/'
+        '^/odr/' : '/ords/edwdev1/pgw/medHist/'
     },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
