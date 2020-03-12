@@ -131,7 +131,7 @@ var proxy = proxy.createProxyMiddleware({
     },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
-        log("proxy error: " + errprovider + "; req.url: " + req.url + "; status: " + res.statusCode);
+        log("proxy error: " + errprovider + "; req.url: " + req.url + "; status: " + res.statusCode, true);
         
         res.writeHead(500, {
             'Content-Type': 'text/plain'
@@ -206,7 +206,7 @@ function log( message, isError = false ) {
  */
 function denyAccess(message, res, req) {
 
-    log(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers));
+    log(message + " - access denied: url: " + stringify(req.originalUrl) + "  request: " + stringify(req.headers), true);
 
     res.writeHead(401);
     res.end();
