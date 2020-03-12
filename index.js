@@ -109,9 +109,6 @@ function logProvider(provider) {
 	return myCustomProvider;
 }
 
-// var userauth = 'Basic ' + Buffer.from( process.env.TARGET_USERNAME_PASSWORD, 'base64' );
-
-
 // Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || "https://localhost:3000",
@@ -120,10 +117,6 @@ var proxy = proxy.createProxyMiddleware({
     keepAlive: true,
     changeOrigin: true,
     //auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
-/*    headers: {
-        hostname: process.env.TARGET_URL,
-        "Proxy-Authorization: ": userauth
-    },*/
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
@@ -158,6 +151,7 @@ var proxy = proxy.createProxyMiddleware({
      */
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
+        logger.degbug("Payload proxyReq: " + stringify(proxyReq.body));
 
         // Alter header before sent
         if (proxyReq.headers) {
