@@ -36,6 +36,8 @@ app.use('/', function (req, res, next) {
     // Log it
     log("incoming: " + req.url);
 
+    logger.debug("body: " + stringify(req.body) );
+
     // Validate token if enabled
     if (process.env.USE_AUTH_TOKEN &&
         process.env.USE_AUTH_TOKEN == "true" &&
@@ -138,7 +140,7 @@ var proxy = proxy.createProxyMiddleware({
     onProxyRes: function (proxyRes, req, res) {
 
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
-        logger.debug("resp: ", stringify(proxyRes.Buffer.body));
+        logger.debug("resp body: ", stringify(proxyRes.body));
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
@@ -153,7 +155,7 @@ var proxy = proxy.createProxyMiddleware({
      */
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("req: " + stringify(req.Buffer.body));
+        logger.debug("req body: " + stringify(req.body));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
