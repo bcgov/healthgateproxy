@@ -13,7 +13,7 @@ var https = require('https'),
 // create winston logger
 //
 const logger = winston.createLogger({
-    level: 'debug',
+   // level: 'debug',
    // format: winston.format.simple(),
    // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
@@ -26,7 +26,6 @@ var app = express();
 
 // Add status endpoint
 app.get('/status', function (req, res) {
-    logger.debug("/status: ");
     res.send("OK");
 });
 
@@ -35,8 +34,6 @@ app.use('/', function (req, res, next) {
 
     // Log it
     log("incoming: " + req.url);
-
-    logger.debug("body: " + stringify(req.body) );
 
     // Validate token if enabled
     if (process.env.USE_AUTH_TOKEN &&
@@ -120,7 +117,7 @@ var proxy = proxy.createProxyMiddleware({
     changeOrigin: true,
     // Basic authentication
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
-    logLevel: 'debug',
+    logLevel: 'info',
     logProvider: logProvider,
     pathRewrite: {
         '^/healthgateway/' : '/ords/edwdev1/pgw/medHist/'
@@ -138,9 +135,7 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
-
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
-        logger.debug("resp body: ", stringify(proxyRes.body));
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
@@ -154,8 +149,7 @@ var proxy = proxy.createProxyMiddleware({
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
     onProxyReq: function(proxyReq, req, res) {
-        logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("req body: " + stringify(req.body));
+        logger.info("RAW proxyReq: ", stringify(proxyReq.headers));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
