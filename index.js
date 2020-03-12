@@ -116,7 +116,8 @@ var proxy = proxy.createProxyMiddleware({
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
     changeOrigin: true,
-    //auth: process.env.TARGET_USERNAME_PASSWORD || "username:password",
+    // Basic authentication
+    auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
@@ -151,11 +152,19 @@ var proxy = proxy.createProxyMiddleware({
      */
     onProxyReq: function(proxyReq, req, res) {
         logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
-        logger.degbug("Payload proxyReq: " + stringify(proxyReq.body));
+        logger.debug("req body: " + stringify(req.body));
+
+        if (req.headers) {
+            // Delete it because we add HTTPs Basic later
+            delete req.headers["x-authorization"];
+
+            // Delete any attempts at cookies
+            delete req.headers["cookie"];
+
+        }
 
         // Alter header before sent
         if (proxyReq.headers) {
-
             // Delete it because we add HTTPs Basic later
             delete proxyReq.headers["x-authorization"];
 
@@ -164,11 +173,6 @@ var proxy = proxy.createProxyMiddleware({
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
-        }
-
-        if (process.env.TARGET_USERNAME_PASSWORD && process.env.TARGET_USERNAME_PASSWORD.length > 0) {
-            proxyReq.setHeader("Proxy-Authorization", "Basic " + process.env.TARGET_USERNAME_PASSWORD);
-            logger.debug("Modified proxyReq: ", stringify(proxyReq.headers));
         }
     }
 });
