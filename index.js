@@ -124,7 +124,7 @@ var proxy = proxy.createProxyMiddleware({
     },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
-        log("proxy error: " + errprovider + "; req.url: " + req.url + "; status: " + res.statusCode, true);
+        log("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode, true);
         
         res.writeHead(500, {
             'Content-Type': 'text/plain'
