@@ -13,7 +13,7 @@ var https = require('https'),
 // create winston logger
 //
 const logger = winston.createLogger({
-   // level: 'debug',
+   level: 'debug',
    // format: winston.format.simple(),
    // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
@@ -121,15 +121,15 @@ var proxy = proxy.createProxyMiddleware({
     changeOrigin: true,
     // Basic authentication
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
-    logLevel: 'info',
+    logLevel: 'debug',
     logProvider: logProvider,
     pathRewrite: {
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
     },
-    // autoRewrite: false,
+    autoRewrite: true,
     // hostRewrite: false,
-    followRedirects: true,
+    // followRedirects: true,
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -159,6 +159,7 @@ var proxy = proxy.createProxyMiddleware({
      */
     onProxyReq: function(proxyReq, req, res) {
         logger.info("RAW proxyReq: ", stringify(proxyReq.headers));
+        logger.debug("RAW proxyReq: ", stringify(req));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
@@ -170,7 +171,7 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         // Alter header before sent
-        if (proxyReq.headers) {
+  /*      if (proxyReq.headers) {
             // Delete it because we add HTTPs Basic later
             delete proxyReq.headers["x-authorization"];
 
@@ -179,7 +180,9 @@ var proxy = proxy.createProxyMiddleware({
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
-        }
+        }*/
+
+        proxyReq.setHeader('host', req.originalUrl );
     }
 });
 
