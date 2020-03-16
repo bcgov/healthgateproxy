@@ -124,7 +124,8 @@ var proxy = proxy.createProxyMiddleware({
     logLevel: 'info',
     logProvider: logProvider,
     pathRewrite: {
-        '^/odr/' : '/ords/edwdev1/pgw/medHist/'
+        '^/odr/' : '/pgw/medHist/',
+        '^/poc/' : '/pgw/'
     },
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
