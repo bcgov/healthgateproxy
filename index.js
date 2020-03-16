@@ -181,7 +181,7 @@ var proxy = proxy.createProxyMiddleware({
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
         }*/
-        proxyReq.set({ 'host': req.originalUrl });
+        proxyReq.setHeader({ 'host': req.originalUrl });
 
         logger.debug("MODIFIED proxyReq: ", stringify(proxyReq.headers));
         logger.debug("MODIFIED req: ", stringify(req.headers));
