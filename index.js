@@ -6,7 +6,7 @@ var https = require('https'),
     winston = require('winston'),
     stringify = require('json-stringify-safe'),
     express = require('express'),
-    moment = require('moment');
+    moment = require('moment'),
     proxy = require('http-proxy-middleware');
 
 //
