@@ -80,7 +80,7 @@ function setHttpsAgentOptions() {
             return new https.Agent(httpsAgentOptions);
         } catch (e) {
             log('Check configurations for USE_MUTUAL_TLS.  ' + 
-                'Missing or incorrect value(s) for MUTUAL_TLS_PEM_KEY_BASE64, MUTUAL_TLS_PEM_KEY_PASSPHRASE or MUTUAL_TLS_PEM_CERT variable(s).');
+                'Missing or incorrect value(s) for MUTUAL_TLS_PEM_KEY_BASE64, MUTUAL_TLS_PEM_KEY_PASSPHRASE or MUTUAL_TLS_PEM_CERT variable(s).', true);
         }
     }
     // Default when USE_MUTUAL_TLS not set
