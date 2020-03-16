@@ -127,8 +127,9 @@ var proxy = proxy.createProxyMiddleware({
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
     },
-    autoRewrite: false,
-    hostRewrite: false,
+    // autoRewrite: false,
+    // hostRewrite: false,
+    followRedirects: true,
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
