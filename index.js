@@ -71,13 +71,17 @@ function setHttpsAgentOptions() {
 
     if (process.env.USE_MUTUAL_TLS &&
         process.env.USE_MUTUAL_TLS == "true") {
-
-        var httpsAgentOptions = {
-            key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
-            passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
-            cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
-        };
-        return new https.Agent(httpsAgentOptions);
+        try {
+            var httpsAgentOptions = {
+                key: Buffer.from(process.env.MUTUAL_TLS_PEM_KEY_BASE64, 'base64'),
+                passphrase: process.env.MUTUAL_TLS_PEM_KEY_PASSPHRASE,
+                cert: Buffer.from(process.env.MUTUAL_TLS_PEM_CERT, 'base64')
+            };
+            return new https.Agent(httpsAgentOptions);
+        } catch (e) {
+            log('Check configurations for USE_MUTUAL_TLS.  ' + 
+                'Missing either MUTUAL_TLS_PEM_KEY_BASE64, MUTUAL_TLS_PEM_KEY_PASSPHRASE or MUTUAL_TLS_PEM_CERT value(s).');
+        }
     }
     // Default when USE_MUTUAL_TLS not set
     return new https.Agent();
