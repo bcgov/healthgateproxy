@@ -143,7 +143,7 @@ var proxy = proxy.createProxyMiddleware({
     },
 
     // Listen for the `proxyRes` event on `proxy`.
-    onProxyRes: function (proxyRes, req, res) {
+    onProxyRes: function (proxyRes, req, res, options) {
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
 
         // Delete "set-cookie" from header if it exists
@@ -157,10 +157,11 @@ var proxy = proxy.createProxyMiddleware({
      * This event is emitted before the data is sent.
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
-    onProxyReq: function(proxyReq, req, res) {
+    onProxyReq: function(proxyReq, req, res, options) {
         logger.info("RAW proxyReq: ", stringify(proxyReq.headers));
         logger.debug("RAW req: ", stringify(req.headers));
         logger.debug("RAW res: ", stringify(res.headers));
+        logger.debug('options: ', stringify(options));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
