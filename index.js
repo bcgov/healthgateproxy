@@ -123,7 +123,30 @@ var proxy = proxy.createProxyMiddleware({
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: process.env.LOG_LEVEL | 'info',
     logProvider: logProvider,
-    pathRewrite: process.env.PATH_REWRITE | {'/' : '/'},
+    pathRewrite: function (path, req) { 
+
+        var newPath = path;
+
+        if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 ) {
+
+            logger.debug( 'path: ' +  path );
+            logger.debug( 'process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
+
+            var paths = process.env.PATH_REWRITE.split(',');
+            paths.forEach( (x) => {
+                logger.debug( 'forEach x; ' + x );
+                if ( x ) {
+                    var pairs = x.split(':');
+
+                    // Key: value
+                    if ( pairs.length === 2 && path.match( pairs[0]) ) {
+                        newPath =  path.replace(pairs[0], pairs[1]);
+                    }
+                }
+            })
+        }
+        return newPath;
+    }
     /*{
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
