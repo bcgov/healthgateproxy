@@ -128,7 +128,7 @@ var proxy = proxy.createProxyMiddleware({
         '^/poc/' : '/pgw/'
     },
     autoRewrite: false,
-    //hostRewrite: false,
+    hostRewrite: 'localhost',
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
