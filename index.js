@@ -137,12 +137,12 @@ var proxy = proxy.createProxyMiddleware({
                 logger.debug( 'forEach x; ' + x );
                 var pairs = x.split(':');
 
-                logger.debug( 'pairs: ' + pairs[0] + ': ' + pairs[1] );
-                var regex = RegExp( pairs[0] );
+                logger.debug( 'pairs: ' + pairs[0] + ': ' + pairs[1] + ' - ' + path.match( pairs[0] ) );
 
                 // Key: value
-                if ( regex.test( path ) ) {
+                if ( path.match( pairs[0] ) ) {
                     newPath =  path.replace( pairs[0], pairs[1] );
+                    logger.debug( 'newPath (1): ' + newPath );
                 }
             })
         }
