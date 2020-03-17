@@ -123,7 +123,7 @@ var proxy = proxy.createProxyMiddleware({
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: process.env.LOG_LEVEL | 'info',
     logProvider: logProvider,
-    pathRewrite: process.env.PATH_REWRITE | null,
+    pathRewrite: process.env.PATH_REWRITE | {'/' : '/'},
     /*{
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
