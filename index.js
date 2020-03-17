@@ -135,16 +135,15 @@ var proxy = proxy.createProxyMiddleware({
             var paths = process.env.PATH_REWRITE.split(',');
             paths.forEach( (x) => {
                 logger.debug( 'forEach x; ' + x );
-                if ( x ) {
-                    var pairs = x.split(':');
+                var pairs = x.split(':');
 
-                    // Key: value
-                    if ( pairs.length === 2 && path.match( pairs[0]) ) {
-                        newPath =  path.replace(pairs[0], pairs[1]);
-                    }
+                // Key: value
+                if ( path.match( pairs[0]) ) {
+                    newPath =  path.replace(pairs[0], pairs[1]);
                 }
             })
         }
+        logger.debug( 'newPath: ' + newPath );
         return newPath;
     },
     /*{
