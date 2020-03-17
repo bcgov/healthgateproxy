@@ -137,6 +137,8 @@ var proxy = proxy.createProxyMiddleware({
                 logger.debug( 'forEach x; ' + x );
                 var pairs = x.split(':');
 
+                logger.debug( 'pairs: ' + pairs[0] + ': ' + pairs[1] );
+
                 // Key: value
                 if ( path.match( pairs[0]) ) {
                     newPath =  path.replace(pairs[0], pairs[1]);
