@@ -127,9 +127,8 @@ var proxy = proxy.createProxyMiddleware({
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
     },
-    // autoRewrite: true,
+    autoRewrite: true,
     // hostRewrite: false,
-    // followRedirects: true,
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -143,8 +142,10 @@ var proxy = proxy.createProxyMiddleware({
     },
 
     // Listen for the `proxyRes` event on `proxy`.
-    onProxyRes: function (proxyRes, req, res, options) {
+    onProxyRes: function (proxyRes, req, res) {
         logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
+        logger.debug("RAW req: ", stringify(req.headers));
+        logger.debug("RAW res: ", stringify(res.headers));
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
