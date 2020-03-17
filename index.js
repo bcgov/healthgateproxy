@@ -140,7 +140,7 @@ var proxy = proxy.createProxyMiddleware({
                 logger.debug( 'pairs: ' + pairs[0] + ': ' + pairs[1] + ' - ' + path.match( pairs[0] ) );
 
                 // Key: value
-                if ( path.match( pairs[0] ) ) {
+                if ( pairs.length == 2 && path.match( pairs[0] ) ) {
                     newPath =  path.replace( pairs[0], pairs[1] );
                     logger.debug( 'newPath (1): ' + newPath );
                 }
