@@ -118,7 +118,7 @@ var proxy = proxy.createProxyMiddleware({
     agent: setHttpsAgentOptions(),
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
-    changeOrigin: true,
+    changeOrigin: false,
     // Basic authentication
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: 'debug',
@@ -127,8 +127,8 @@ var proxy = proxy.createProxyMiddleware({
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
     },
-    autoRewrite: true,
-    // hostRewrite: false,
+    //autoRewrite: true,
+    //hostRewrite: false,
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
