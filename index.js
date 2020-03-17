@@ -146,7 +146,7 @@ var proxy = proxy.createProxyMiddleware({
             })
         }
         return newPath;
-    }
+    },
     /*{
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
