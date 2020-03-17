@@ -13,7 +13,7 @@ var https = require('https'),
 // create winston logger
 //
 const logger = winston.createLogger({
-   level: 'debug',
+   level: process.env.LOG_LEVEL | 'info',
    // format: winston.format.simple(),
    // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
@@ -121,14 +121,15 @@ var proxy = proxy.createProxyMiddleware({
     changeOrigin: true,
     // Basic authentication
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
-    logLevel: 'debug',
+    logLevel: process.env.LOG_LEVEL | 'info',
     logProvider: logProvider,
-    pathRewrite: {
+    pathRewrite: process.env.PATH_REWRITE | null,
+    /*{
         '^/odr/' : '/pgw/medHist/',
         '^/poc/' : '/pgw/'
-    },
-    autoRewrite: false,
-    hostRewrite: 'https://localhost',
+    },*/
+    // autoRewrite: false,
+    // hostRewrite: 'https://localhost',
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -158,11 +159,10 @@ var proxy = proxy.createProxyMiddleware({
      * This event is emitted before the data is sent.
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
-    onProxyReq: function(proxyReq, req, res, options) {
+    onProxyReq: function(proxyReq, req, res) {
         logger.info("RAW proxyReq: ", stringify(proxyReq.headers));
         logger.debug("RAW req: ", stringify(req.headers));
         logger.debug("RAW res: ", stringify(res.headers));
-        logger.debug('options: ', stringify(options));
 
         if (req.headers) {
             // Delete it because we add HTTPs Basic later
@@ -174,7 +174,7 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         // Alter header before sent
-  /*      if (proxyReq.headers) {
+       if (proxyReq.headers) {
             // Delete it because we add HTTPs Basic later
             delete proxyReq.headers["x-authorization"];
 
@@ -183,8 +183,7 @@ var proxy = proxy.createProxyMiddleware({
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
-        }*/
-        //proxyReq.setHeader('host', req.originalUrl );
+        }
 
         logger.debug("MODIFIED proxyReq: ", stringify(proxyReq.headers));
         logger.debug("MODIFIED req: ", stringify(req.headers));
