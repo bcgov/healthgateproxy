@@ -9,7 +9,7 @@ var https = require('https'),
     moment = require('moment'),
     proxy = require('http-proxy-middleware');
 
-var log_level = process.env.LOG_LEVEL? process.env.LOG_LEVEL : 'info';
+var log_level = process.env.LOG_LEVEL || 'info';
 
 //
 // create winston logger
