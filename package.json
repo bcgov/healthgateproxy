@@ -1,6 +1,6 @@
 {
   "name": "healthgateproxy",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "British Columbia Health Gateway Proxy Service",
   "main": "index.js",
   "scripts": {

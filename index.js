@@ -9,6 +9,7 @@ var https = require('https'),
     moment = require('moment'),
     proxy = require('http-proxy-middleware');
 
+// Set logging level within proxy
 var log_level = process.env.LOG_LEVEL || 'info';
 
 //
@@ -144,17 +145,13 @@ var proxy = proxy.createProxyMiddleware({
                 // Key: value
                 if ( pairs.length == 2 && path.match( pairs[0] ) ) {
                     newPath =  path.replace( pairs[0], pairs[1] );
-                    logger.debug( 'newPath (1): ' + newPath );
+                    logger.debug( 'newPath created: ' + newPath );
                 }
             })
         }
         logger.debug( 'newPath: ' + newPath );
         return newPath;
     },
-    /*{
-        '^/odr/' : '/pgw/medHist/',
-        '^/poc/' : '/pgw/'
-    },*/
     // autoRewrite: false,
     // hostRewrite: 'https://localhost',
 
@@ -171,7 +168,7 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
-        logger.info('RAW Response from the target: ' + stringify(proxyRes.headers));
+        logger.debug('RAW Response from the target: ' + stringify(proxyRes.headers));
         logger.debug("RAW req: ", stringify(req.headers));
         logger.debug("RAW res: ", stringify(res.headers));
 
@@ -187,7 +184,7 @@ var proxy = proxy.createProxyMiddleware({
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
     onProxyReq: function(proxyReq, req, res) {
-        logger.info("RAW proxyReq: ", stringify(proxyReq.headers));
+        logger.debug("RAW proxyReq: ", stringify(proxyReq.headers));
         logger.debug("RAW req: ", stringify(req.headers));
         logger.debug("RAW res: ", stringify(res.headers));
 
@@ -219,6 +216,13 @@ var proxy = proxy.createProxyMiddleware({
 
 // Add in proxy AFTER authorization
 app.use('/', proxy);
+
+app.use(function (err, req, res, /*unused*/ next) {
+
+    logger.debug( 'last case: ', req, res, err );
+    // ... more error cases...
+    //return res.status(500).send('Unknown Error');
+});
 
 // Start express
 app.listen(8080);
