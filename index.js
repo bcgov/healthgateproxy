@@ -9,11 +9,13 @@ var https = require('https'),
     moment = require('moment'),
     proxy = require('http-proxy-middleware');
 
+var log_level = process.env.LOG_LEVEL? process.env.LOG_LEVEL : 'info';
+
 //
 // create winston logger
 //
 const logger = winston.createLogger({
-   level: process.env.LOG_LEVEL | 'info',
+   level: log_level,
    // format: winston.format.simple(),
    // defaultMeta: { service: 'user-service' },
    transports: [ new winston.transports.Console() ]
@@ -121,7 +123,7 @@ var proxy = proxy.createProxyMiddleware({
     changeOrigin: true,
     // Basic authentication
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
-    logLevel: process.env.LOG_LEVEL | 'info',
+    logLevel: log_level,
     logProvider: logProvider,
     pathRewrite: function (path, req) { 
 
