@@ -22,38 +22,29 @@ const logger = winston.createLogger({
     transports: [ new winston.transports.Console() ]
  });
 
-var pathRewrite = () => {
+ function createPathRewriteObj(reverse = false ) {
+
     if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
         var pathList = process.env.PATH_REWRITE.split(',');
         var paths = {};
         pathList.forEach( (x) => {
-            paths =  Object.assign( paths, {x} );
+            var obj = x;
+
+            if ( reverse == true ) {
+                var pairs = x.split(':');
+                obj = pairs[1] + ':' + pairs[0];
+            }
+            paths =  Object.assign( paths, {obj} );
             logger.debug( 'rewritePath Object' + paths );
         });
         return paths;
     }
     logger.debug( 'rewritePath Object - null' );
     return null;
-}
+ }
 
-var cookiePathRewrite = () => {
-    if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
-        var pathList = process.env.PATH_REWRITE.split(',');
-        var paths = {};
-        pathList.env.PATH_REWRITE.forEach( (x) => {
-            var pairs = x.split(':');
-            var obj = pairs[1] + ':' + pairs[0];
-
-            paths =  Object.assign( paths, { obj });
-            logger.debug( 'cookieRewritePath Object' + paths );
-        });
-        return paths;
-    }
-    logger.debug( 'cookieRewritePath Object - null' );
-    return null;
-}
-
-
+var pathRewrite = createPathRewriteObj();
+var cookiePathRewrite = (createPathRewriteObj(true);
 
 //
 // Init express
