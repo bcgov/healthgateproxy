@@ -41,7 +41,8 @@ var cookiePathRewrite = () => {
         var paths = {};
         str.env.PATH_REWRITE.forEach( (x) => {
             var pairs = x.split(':');
-            paths =  Object.assign( paths, {pairs[1]:pairs[0]} );
+
+            paths =  Object.assign( paths, pairs[1] + ':' + pairs[0] );
             logger.debug( 'cookieRewritePath Object', paths );
         });
         return paths;
