@@ -171,6 +171,7 @@ var proxy = proxy.createProxyMiddleware({
                 }
             })
         }
+    },
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
