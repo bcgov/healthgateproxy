@@ -156,21 +156,22 @@ var proxy = proxy.createProxyMiddleware({
 
         if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 ) {
 
-            logger.debug( 'path: ' +  path );
-            logger.debug( 'process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
+            logger.debug( 'cookiePathRewrite - path: ' +  path );
+            logger.debug( 'cookiePathRewrite - process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
 
             var paths = process.env.PATH_REWRITE.split(',');
             paths.forEach( (x) => {
-                logger.debug( 'forEach x; ' + x );
+                logger.debug( 'cookiePathRewrite - forEach x; ' + x );
                 var pairs = x.split(':');
 
                 // Key: value
                 if ( pairs.length == 2 && path.match( pairs[1] ) ) {
                     newPath =  path.replace( pairs[1] , pairs[0] );
-                    logger.debug( 'newPath created: ' + newPath );
+                    logger.debug( 'cookiePathRewrite - newPath created: ' + newPath );
                 }
             })
         }
+        return newPath;
     },
 
     // Listen for the `error` event on `proxy`.
