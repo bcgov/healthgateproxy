@@ -82,7 +82,7 @@ function setHttpsAgentOptions() {
             };
             return new https.Agent(httpsAgentOptions);
         } catch (e) {
-            log('Check configurations for USE_MUTUAL_TLS.  ' + 
+            logger.info('Check configurations for USE_MUTUAL_TLS.  ' + 
                 'Missing or incorrect value(s) for MUTUAL_TLS_PEM_KEY_BASE64, MUTUAL_TLS_PEM_KEY_PASSPHRASE or MUTUAL_TLS_PEM_CERT variable(s).', true);
         }
     }
@@ -140,8 +140,6 @@ var proxy = proxy.createProxyMiddleware({
                 logger.debug( 'forEach x; ' + x );
                 var pairs = x.split(':');
 
-                logger.debug( 'pairs: ' + pairs[0] + ': ' + pairs[1] + ' - ' + path.match( pairs[0] ) );
-
                 // Key: value
                 if ( pairs.length == 2 && path.match( pairs[0] ) ) {
                     newPath =  path.replace( pairs[0], pairs[1] );
@@ -149,11 +147,10 @@ var proxy = proxy.createProxyMiddleware({
                 }
             })
         }
-        logger.debug( 'newPath: ' + newPath );
         return newPath;
     },
-    // autoRewrite: false,
-    // hostRewrite: 'https://localhost',
+    autoRewrite: true,
+    protocolRewrite: 'https',
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -216,13 +213,6 @@ var proxy = proxy.createProxyMiddleware({
 
 // Add in proxy AFTER authorization
 app.use('/', proxy);
-
-app.use(function (err, req, res, /*unused*/ next) {
-
-    logger.debug( 'last case: ', req, res, err );
-    // ... more error cases...
-    //return res.status(500).send('Unknown Error');
-});
 
 // Start express
 app.listen(8080);
