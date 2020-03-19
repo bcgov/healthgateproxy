@@ -27,8 +27,8 @@ var pathRewrite = () => {
         var pathList = process.env.PATH_REWRITE.split(',');
         var paths = {};
         pathList.forEach( (x) => {
-            paths =  Object.assign( paths, x );
-            logger.debug( 'rewritePath Object', paths );
+            paths =  Object.assign( paths, {x} );
+            logger.debug( 'rewritePath Object' + paths );
         });
         return paths;
     }
@@ -43,8 +43,8 @@ var cookiePathRewrite = () => {
         pathList.env.PATH_REWRITE.forEach( (x) => {
             var pairs = x.split(':');
 
-            paths =  Object.assign( paths, pairs[1] + ':' + pairs[0] );
-            logger.debug( 'cookieRewritePath Object', paths );
+            paths =  Object.assign( paths, { pairs[1]: pairs[0] });
+            logger.debug( 'cookieRewritePath Object' + paths );
         });
         return paths;
     }
