@@ -150,7 +150,27 @@ var proxy = proxy.createProxyMiddleware({
         return newPath;
     },
     autoRewrite: true,
-    protocolRewrite: 'https',
+    cookiePathRewrite: function (path, req) { 
+
+        var newPath = path;
+
+        if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 ) {
+
+            logger.debug( 'path: ' +  path );
+            logger.debug( 'process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
+
+            var paths = process.env.PATH_REWRITE.split(',');
+            paths.forEach( (x) => {
+                logger.debug( 'forEach x; ' + x );
+                var pairs = x.split(':');
+
+                // Key: value
+                if ( pairs.length == 2 && path.match( pairs[0] ) ) {
+                    newPath =  path.replace( pairs[1] , pairs[0] );
+                    logger.debug( 'newPath created: ' + newPath );
+                }
+            })
+        }
 
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
