@@ -44,7 +44,7 @@ const logger = winston.createLogger({
  }
 
 var pathRewrite = createPathRewriteObj();
-var cookiePathRewrite = (createPathRewriteObj(true);
+var cookiePathRewrite = createPathRewriteObj(true);
 
 //
 // Init express
