@@ -24,8 +24,9 @@ const logger = winston.createLogger({
 
 var pathRewrite = () => {
     if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
+        var pathList = process.env.PATH_REWRITE.split(',');
         var paths = {};
-        process.env.PATH_REWRITE.forEach( (x) => {
+        pathList.forEach( (x) => {
             paths =  Object.assign( paths, x );
             logger.debug( 'rewritePath Object', paths );
         });
@@ -37,9 +38,9 @@ var pathRewrite = () => {
 
 var cookiePathRewrite = () => {
     if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
-        var str = process.env.PATH_REWRITE.split(',');
+        var pathList = process.env.PATH_REWRITE.split(',');
         var paths = {};
-        str.env.PATH_REWRITE.forEach( (x) => {
+        pathList.env.PATH_REWRITE.forEach( (x) => {
             var pairs = x.split(':');
 
             paths =  Object.assign( paths, pairs[1] + ':' + pairs[0] );
