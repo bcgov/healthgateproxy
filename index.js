@@ -165,7 +165,7 @@ var proxy = proxy.createProxyMiddleware({
                 var pairs = x.split(':');
 
                 // Key: value
-                if ( pairs.length == 2 && path.match( pairs[0] ) ) {
+                if ( pairs.length == 2 && path.match( pairs[1] ) ) {
                     newPath =  path.replace( pairs[1] , pairs[0] );
                     logger.debug( 'newPath created: ' + newPath );
                 }
