@@ -16,11 +16,41 @@ var log_level = process.env.LOG_LEVEL || 'info';
 // create winston logger
 //
 const logger = winston.createLogger({
-   level: log_level,
-   // format: winston.format.simple(),
-   // defaultMeta: { service: 'user-service' },
-   transports: [ new winston.transports.Console() ]
-});
+    level: log_level,
+    // format: winston.format.simple(),
+    // defaultMeta: { service: 'user-service' },
+    transports: [ new winston.transports.Console() ]
+ });
+
+var pathRewrite = () => {
+    if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
+        var paths = {};
+        process.env.PATH_REWRITE.forEach( (x) => {
+            paths =  Object.assign( paths, x );
+            logger.debug( 'rewritePath Object', paths );
+        });
+        return paths;
+    }
+    logger.debug( 'rewritePath Object - null' );
+    return null;
+}
+
+var cookiePathRewrite = () => {
+    if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
+        var str = process.env.PATH_REWRITE.split(',');
+        var paths = {};
+        str.env.PATH_REWRITE.forEach( (x) => {
+            var pairs = x.split(':');
+            paths =  Object.assign( paths, {pairs[1]:pairs[0]} );
+            logger.debug( 'cookieRewritePath Object', paths );
+        });
+        return paths;
+    }
+    logger.debug( 'cookieRewritePath Object - null' );
+    return null;
+}
+
+
 
 //
 // Init express
@@ -126,7 +156,8 @@ var proxy = proxy.createProxyMiddleware({
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: log_level,
     logProvider: logProvider,
-    pathRewrite: function (path, req) { 
+    pathRewrite: pathRewrite,
+    /*function (path, req) { 
 
         var newPath = path;
 
@@ -148,32 +179,10 @@ var proxy = proxy.createProxyMiddleware({
             })
         }
         return newPath;
-    },
+    },*/
     autoRewrite: true,
-    cookiePathRewrite: function (path, req) { 
-
-        var newPath = path;
-
-        if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 ) {
-
-            logger.debug( 'cookiePathRewrite - path: ' +  path );
-            logger.debug( 'cookiePathRewrite - process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
-
-            var paths = process.env.PATH_REWRITE.split(',');
-            paths.forEach( (x) => {
-                logger.debug( 'cookiePathRewrite - forEach x; ' + x );
-                var pairs = x.split(':');
-
-                // Key: value
-                if ( pairs.length == 2 && path.match( pairs[1] ) ) {
-                    newPath =  path.replace( pairs[1] , pairs[0] );
-                    logger.debug( 'cookiePathRewrite - newPath created: ' + newPath );
-                }
-            })
-        }
-        return newPath;
-    },
-
+    cookiePathRewrite: cookiePathRewrite,
+    
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
         log("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode, true);
