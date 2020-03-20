@@ -28,12 +28,9 @@ const logger = winston.createLogger({
         var pathList = process.env.PATH_REWRITE.split(',');
         var paths = {};
         pathList.forEach( (x) => {
-            var obj = x;
+            var pairs = x.split(':');
+            var obj = (reverse == true) ? { [pairs[1] ]: pairs[0] } : { [pairs[0] ]: pairs[1] };
 
-            if ( reverse == true ) {
-                var pairs = x.split(':');
-                obj = pairs[1] + ':' + pairs[0];
-            }
             paths =  Object.assign( paths, {obj} );
             logger.debug( 'rewritePath Object' + paths );
         });
