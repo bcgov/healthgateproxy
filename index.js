@@ -169,6 +169,7 @@ var proxy = proxy.createProxyMiddleware({
         logger.debug("RAW res: ", stringify(res.headers));
 
         logger.debug('RAW Response from target - statusCode: ', proxyRes.statusCode );
+        logger.debug('RAW Response from target - body: ', proxyRes.body );
 
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
