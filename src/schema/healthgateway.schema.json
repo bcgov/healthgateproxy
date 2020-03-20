@@ -203,7 +203,7 @@
                     "$comment": "Arrary of medication records",
                     "$ref": "#medicationRecords"
                 },
-                "totalrecords": {
+                "totalRecords": {
                     "$comment": "total number of medication records for the time frame without page limits",
                     "type": "integer"
                 },

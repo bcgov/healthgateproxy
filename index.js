@@ -22,27 +22,6 @@ const logger = winston.createLogger({
     transports: [ new winston.transports.Console() ]
  });
 
- function createPathRewriteObj(reverse = false ) {
-
-    if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 )  {
-        var pathList = process.env.PATH_REWRITE.split(',');
-        var paths = {};
-        pathList.forEach( (x) => {
-            var pairs = x.split(':');
-            var obj = (reverse == true) ? { [pairs[1] ]: pairs[0] } : { [pairs[0] ]: pairs[1] };
-
-            paths =  Object.assign( paths, {obj} );
-            logger.debug( 'rewritePath Object' + paths );
-        });
-        return paths;
-    }
-    logger.debug( 'rewritePath Object - null' );
-    return null;
- }
-
-var pathRewrite = createPathRewriteObj();
-var cookiePathRewrite = createPathRewriteObj(true);
-
 //
 // Init express
 //
@@ -147,8 +126,7 @@ var proxy = proxy.createProxyMiddleware({
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: log_level,
     logProvider: logProvider,
-    pathRewrite: pathRewrite,
-    /*function (path, req) { 
+    pathRewrite: function (path, req) { 
 
         var newPath = path;
 
@@ -170,9 +148,9 @@ var proxy = proxy.createProxyMiddleware({
             })
         }
         return newPath;
-    },*/
+    },
     autoRewrite: true,
-    cookiePathRewrite: cookiePathRewrite,
+    cookiePathRewrite: true,
     
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -207,7 +185,7 @@ var proxy = proxy.createProxyMiddleware({
         logger.debug("RAW req: ", stringify(req.headers));
         logger.debug("RAW res: ", stringify(res.headers));
 
-        if (req.headers) {
+     /*   if (req.headers) {
             // Delete it because we add HTTPs Basic later
             delete req.headers["x-authorization"];
 
@@ -229,7 +207,7 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         logger.debug("MODIFIED proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("MODIFIED req: ", stringify(req.headers));
+        logger.debug("MODIFIED req: ", stringify(req.headers));*/
     }
 });
 
