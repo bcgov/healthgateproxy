@@ -149,6 +149,7 @@ var proxy = proxy.createProxyMiddleware({
         }
         return newPath;
     },
+    autoRewrite: true,
     selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
