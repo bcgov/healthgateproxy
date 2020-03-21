@@ -149,7 +149,7 @@ var proxy = proxy.createProxyMiddleware({
         }
         return newPath;
     },
-    // autoRewrite: true,
+    selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
@@ -168,22 +168,28 @@ var proxy = proxy.createProxyMiddleware({
         logger.debug("RAW req: " + stringify(req.headers));
         logger.debug("RAW res: " + stringify(res.headers));
 
-        let body = '';
-
-        proxyRes.on( 'data', ( data ) => {
-          data = data.toString( 'utf-8' );
-          body += data;
-
-          logger.debug('data: ' + body );
-        } );
-
-        logger.debug('statusCode: ' + proxyRes.statusCode );
-
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
             // Delete set-cookie
             delete proxyRes.headers["set-cookie"];
         }
+
+        logger.debug('statusCode: ' + proxyRes.statusCode );
+
+    /*    var redirectRegex = /^201|30(1|2|7|8)$/;
+        if ( redirectRegex.test( proxyRes.statusCode) ) {
+
+
+        } else {*/
+            let body = '';
+
+            proxyRes.on( 'data', ( data ) => {
+              data = data.toString( 'utf-8' );
+              body += data;
+    
+              logger.debug('data: ' + body );
+            } );
+       // }
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
@@ -191,17 +197,17 @@ var proxy = proxy.createProxyMiddleware({
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
     onProxyReq: function(proxyReq, req, res) {
-        logger.debug("RAW proxyReq: " + stringify(proxyReq));
+        logger.debug("RAW proxyReq: " + stringify(proxyReq.headers));
         logger.debug("RAW req: " + stringify(req.headers));
         logger.debug("RAW res: " + stringify(res.headers));
 
-       if (req.headers) {
+  /*     if (req.headers) {
             // Delete it because we add HTTPs Basic later
             delete req.headers["x-authorization"];
 
             // Delete any attempts at cookies
             delete req.headers["cookie"];
-        }
+        }*/
 
         // Alter header before sent
      /*  if (proxyReq.headers) {
@@ -215,7 +221,7 @@ var proxy = proxy.createProxyMiddleware({
             delete proxyReq.headers["set-cookie"];
         }*/
 
-        logger.debug("MODIFIED req: " + stringify(req.headers));
+     //   logger.debug("MODIFIED req: " + stringify(req.headers));
     }
 });
 
