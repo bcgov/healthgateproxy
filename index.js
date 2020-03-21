@@ -150,7 +150,7 @@ var proxy = proxy.createProxyMiddleware({
         return newPath;
     },
     followRedirects: true,
-    protocolRewrite: 'https',
+    protocolRewrite: 'http',
     autoRewrite: true,
     selfHandleResponse: true,
     
