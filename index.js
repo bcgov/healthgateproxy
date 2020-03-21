@@ -219,8 +219,8 @@ var proxy = proxy.createProxyMiddleware({
         // add custom header to request
         proxyReq.setHeader('x-added', 'foobar');
 
-        logger.debug("MODIFIED proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("MODIFIED req: ", stringify(req.headers));
+        logger.debug("MODIFIED proxyReq: " + stringify(proxyReq.headers));
+        logger.debug("MODIFIED req: " + stringify(req.headers));
     }
 });
 
