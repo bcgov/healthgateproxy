@@ -177,6 +177,8 @@ var proxy = proxy.createProxyMiddleware({
           logger.debug('data: ' + body );
         } );
 
+        logger.debug('statusCode: ' + proxyRes.statusCode );
+
         // Delete "set-cookie" from header if it exists
         if (proxyRes.headers) {
             // Delete set-cookie
