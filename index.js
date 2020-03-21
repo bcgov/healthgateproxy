@@ -149,10 +149,8 @@ var proxy = proxy.createProxyMiddleware({
         }
         return newPath;
     },
-    followRedirects: true,
-    protocolRewrite: 'http',
     autoRewrite: true,
-    selfHandleResponse: true,
+    protocolRewrite: 'http',
     
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
