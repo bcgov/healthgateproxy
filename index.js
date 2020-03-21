@@ -201,10 +201,6 @@ var proxy = proxy.createProxyMiddleware({
 
             // Delete any attempts at cookies
             delete req.headers["cookie"];
-
-
-            // add custom header to request
-            req.setHeader('x-added', 'test');
         }
 
         // Alter header before sent
