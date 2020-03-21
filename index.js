@@ -195,7 +195,7 @@ var proxy = proxy.createProxyMiddleware({
         logger.debug("RAW req: " + stringify(req.headers));
         logger.debug("RAW res: " + stringify(res.headers));
 
-     /*   if (req.headers) {
+       if (req.headers) {
             // Delete it because we add HTTPs Basic later
             delete req.headers["x-authorization"];
 
@@ -205,7 +205,7 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         // Alter header before sent
-       if (proxyReq.headers) {
+     /*  if (proxyReq.headers) {
             // Delete it because we add HTTPs Basic later
             delete proxyReq.headers["x-authorization"];
 
@@ -214,10 +214,13 @@ var proxy = proxy.createProxyMiddleware({
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
-        }
+        }*/
+
+        // add custom header to request
+        proxyReq.setHeader('x-added', 'foobar');
 
         logger.debug("MODIFIED proxyReq: ", stringify(proxyReq.headers));
-        logger.debug("MODIFIED req: ", stringify(req.headers));*/
+        logger.debug("MODIFIED req: ", stringify(req.headers));
     }
 });
 
