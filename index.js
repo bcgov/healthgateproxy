@@ -141,9 +141,14 @@ var proxy = proxy.createProxyMiddleware({
                 var pairs = x.split(':');
 
                 // Key: value
-                if ( pairs.length == 2 && path.match( pairs[0] ) ) {
-                    newPath =  path.replace( pairs[0], pairs[1] );
-                    logger.debug( 'newPath created: ' + newPath );
+                if ( pairs.length == 2 ) {
+                    if ( path.match( pairs[0] ) ) {
+                        newPath =  path.replace( pairs[0], pairs[1] );
+                        logger.debug( 'newPath created: ' + newPath );
+                    } else if ( path.match( pairs[1] ) ) {
+                        newPath =  path.replace( pairs[1], pairs[0] );
+                        logger.debug( 'newPath created: ' + newPath );
+                    }
                 }
             })
         }
@@ -187,7 +192,7 @@ var proxy = proxy.createProxyMiddleware({
               data = data.toString( 'utf-8' );
               body += data;
     
-              logger.debug('data: ' + body );
+             // logger.debug('data: ' + body );
             } );
        // }
 
