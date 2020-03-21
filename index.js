@@ -191,7 +191,7 @@ var proxy = proxy.createProxyMiddleware({
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
     onProxyReq: function(proxyReq, req, res) {
-        logger.debug("RAW proxyReq: " + stringify(proxyReq.headers));
+        logger.debug("RAW proxyReq: " + stringify(proxyReq));
         logger.debug("RAW req: " + stringify(req.headers));
         logger.debug("RAW res: " + stringify(res.headers));
 
@@ -202,6 +202,9 @@ var proxy = proxy.createProxyMiddleware({
             // Delete any attempts at cookies
             delete req.headers["cookie"];
 
+
+            // add custom header to request
+            req.setHeader('x-added', 'test');
         }
 
         // Alter header before sent
@@ -216,10 +219,6 @@ var proxy = proxy.createProxyMiddleware({
             delete proxyReq.headers["set-cookie"];
         }*/
 
-        // add custom header to request
-        proxyReq.setHeader('x-added', 'foobar');
-
-        logger.debug("MODIFIED proxyReq: " + stringify(proxyReq.headers));
         logger.debug("MODIFIED req: " + stringify(req.headers));
     }
 });
