@@ -191,6 +191,11 @@ var proxy = proxy.createProxyMiddleware({
               logger.debug('data: ' + body );
             } );
        // }
+
+       proxyRes.on('end', function() {
+        proxyRes.pipe(res);
+        res.end("my response to cli");
+      });
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
