@@ -191,7 +191,7 @@ var proxy = proxy.createProxyMiddleware({
               data = data.toString( 'utf-8' );
               body += data;
     
-              logger.debug('data: ' + body );
+             // logger.debug('data: ' + body );
             } );
        // }
 
