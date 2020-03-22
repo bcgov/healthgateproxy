@@ -53,6 +53,9 @@ app.use('/', function (req, res, next) {
             return;
         }
 
+        // Delete authorization token - no longer needed
+        delete req.headers["x-authorization"];
+
         // Parse out the token
         var token = authHeaderValue.replace("Bearer ", "");
 
@@ -141,26 +144,22 @@ var proxy = proxy.createProxyMiddleware({
                 var pairs = x.split(':');
 
                 // Key: value
-                if ( pairs.length == 2 ) {
-                    if ( path.match( pairs[0] ) ) {
-                        newPath =  path.replace( pairs[0], pairs[1] );
-                        logger.debug( 'newPath created: ' + newPath );
-                    } else if ( path.match( pairs[1] ) ) {
-                        newPath =  path.replace( pairs[1], pairs[0] );
-                        logger.debug( 'newPath created: ' + newPath );
-                    }
+                if ( pairs.length == 2 && path.match( pairs[0] ) ) {
+                    newPath =  path.replace( pairs[0], pairs[1] );
+                    logger.debug( 'newPath created: ' + newPath );
                 }
             })
         }
         return newPath;
     },
     autoRewrite: true,
+    selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
     onError: function (err, req, res) {
         log("proxy error: " + err + "; req.url: " + req.url + "; status: " + res.statusCode, true);
         
-        res.writeHead(500, {
+        res.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
 
@@ -192,7 +191,7 @@ var proxy = proxy.createProxyMiddleware({
               data = data.toString( 'utf-8' );
               body += data;
     
-             // logger.debug('data: ' + body );
+              logger.debug('data: ' + body );
             } );
        // }
 
@@ -207,20 +206,12 @@ var proxy = proxy.createProxyMiddleware({
      * It gives you a chance to alter the proxyReq request object. Applies to "web" connections
      */
     onProxyReq: function(proxyReq, req, res) {
-        logger.debug("RAW proxyReq: " + stringify(proxyReq.headers));
-        logger.debug("RAW req: " + stringify(req.headers));
-        logger.debug("RAW res: " + stringify(res.headers));
+        logger.debug('RAW proxyReq: ' + stringify(proxyReq.headers));
+        logger.debug('req: ' + stringify(req.headers) + ', host: ' + 
+                    req.host + ', original url: ' + req.originalUrl);
 
-  /*     if (req.headers) {
-            // Delete it because we add HTTPs Basic later
-            delete req.headers["x-authorization"];
 
-            // Delete any attempts at cookies
-            delete req.headers["cookie"];
-        }*/
-
-        // Alter header before sent
-     /*  if (proxyReq.headers) {
+         if (proxyReq.headers) {
             // Delete it because we add HTTPs Basic later
             delete proxyReq.headers["x-authorization"];
 
@@ -229,9 +220,7 @@ var proxy = proxy.createProxyMiddleware({
 
             // Delete set-cookie
             delete proxyReq.headers["set-cookie"];
-        }*/
-
-     //   logger.debug("MODIFIED req: " + stringify(req.headers));
+        }
     }
 });
 
