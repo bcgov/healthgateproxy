@@ -193,10 +193,17 @@ var proxy = proxy.createProxyMiddleware({
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
         }
+        
+        let body = '';	
+        proxyRes.on( 'data', ( data ) => {	
 
-        proxyRes.on('end', function() {
-            proxyRes.pipe(res);
-            res.end();
+            data = data.toString( 'utf-8' );
+            logger.debug('data: ' + body );
+        });
+
+        proxyRes.on('end', function() {	
+            proxyRes.pipe(res);	
+            res.end("my response to cli");	
         });
     },
 
