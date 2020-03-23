@@ -184,21 +184,15 @@ var proxy = proxy.createProxyMiddleware({
         if ( redirectRegex.test( proxyRes.statusCode) ) {
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
-            // Redirects have location in header
+            
             delete proxyRes.headers['location'];
             proxyRes.statusCode = 404;
+        }   
 
-            res.writeHead(404, {
-                'Content-Type': 'text/plain'
-            });
+        proxyRes.on('end', function() {
+            proxyRes.pipe(res);
             res.end();
-
-        } else {           
-            proxyRes.on('end', function() {
-                proxyRes.pipe(res);
-                res.end();
-            });
-        }
+        });
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
