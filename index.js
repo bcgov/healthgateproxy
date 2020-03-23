@@ -186,7 +186,7 @@ var proxy = proxy.createProxyMiddleware({
 
             proxyRes.headers['location'] = req.hostname || req.host + req.originalUrl;
 
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            res.writeHead(404, proxyRes.headers);
             res.end();
 
         } else {           
