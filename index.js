@@ -185,20 +185,24 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         logger.debug('statusCode: ' + proxyRes.statusCode );
+        var body = '';	
 
-       var redirectRegex = /^201|30(1|2|7|8)$/;
+        var redirectRegex = /^201|30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
 
-        } else {
-            let body = '';	
-            proxyRes.on( 'data', ( data ) => {	
+            res.writeHead( 404, {
+                'Content-Type': 'text/plain'
+            });
     
-                body = data.toString( 'utf-8' );
-                //logger.debug('data: ' + body );
+            res.end('Cannot redirect');
+
+        } else {	
+            proxyRes.on( 'data', ( data ) => {	
+                body = stringify( data.toString( 'utf-8' ) );
             });
     
             proxyRes.on('end', function() {	
