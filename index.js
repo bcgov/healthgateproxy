@@ -198,12 +198,12 @@ var proxy = proxy.createProxyMiddleware({
         proxyRes.on( 'data', ( data ) => {	
 
             data = data.toString( 'utf-8' );
-            logger.debug('data: ' + body );
+            //logger.debug('data: ' + body );
         });
 
         proxyRes.on('end', function() {	
             proxyRes.pipe(res);	
-            res.end("my response to cli");	
+            res.end(body);	
         });
     },
 
