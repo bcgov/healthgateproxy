@@ -201,13 +201,13 @@ var proxy = proxy.createProxyMiddleware({
             res.end('');
 
         } else {	
-            proxyRes.on( 'data', ( data ) => {	
+           /* proxyRes.on( 'data', ( data ) => {	
                 body = data;
-            });
+            });*/
     
             proxyRes.on('end', function() {	
-                proxyRes.pipe(res);	
-                res.end(body);	
+                res.pipe(proxyRes);	
+                res.end();	
             });
         }
     },
