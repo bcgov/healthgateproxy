@@ -168,7 +168,7 @@ var proxy = proxy.createProxyMiddleware({
 
     // Listen for the `proxyRes` event on `proxy`.
     onProxyRes: function (proxyRes, req, res) {
-        logger.debug('RAW Response from the target: ' + stringify(proxyRes.headers));
+        logger.debug('RAW proxyRes from the target: ' + stringify(proxyRes.headers));
         logger.debug('RAW req: ' + stringify(req.headers));
         logger.debug('RAW res: ' + stringify(res.headers));
 
@@ -184,9 +184,9 @@ var proxy = proxy.createProxyMiddleware({
         if ( redirectRegex.test( proxyRes.statusCode) ) {
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
-            var redirect = req.hostname || req.host;
-
-            proxyRes.headers['location'] = redirect + req.originalUrl;
+            // Redirects have location in header
+            delete proxyRes.headers['location'];
+            proxyRes.statusCode = 404;
 
             res.writeHead(404, {
                 'Content-Type': 'text/plain'
