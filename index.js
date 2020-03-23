@@ -184,9 +184,13 @@ var proxy = proxy.createProxyMiddleware({
         if ( redirectRegex.test( proxyRes.statusCode) ) {
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
-            proxyRes.headers['location'] = req.hostname || req.host + req.originalUrl;
+            var redirect = req.hostname || req.host;
 
-            res.writeHead(404, proxyRes.headers);
+            proxyRes.headers['location'] = redirect + req.originalUrl;
+
+            res.writeHead(404, {
+                'Content-Type': 'text/plain'
+            });
             res.end();
 
         } else {           
