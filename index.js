@@ -188,10 +188,12 @@ var proxy = proxy.createProxyMiddleware({
             delete proxyRes.headers['location'];
             proxyRes.statusCode = '404';
 
-            res.writeHead(404, {
-                'Content-Type': 'text/plain'
+            proxyRes.on('end', function() {
+                res.writeHead(404, {
+                    'Content-Type': 'text/plain'
+                });
+                res.end();
             });
-            res.end();
 
         } else {           
             proxyRes.on('end', function() {
