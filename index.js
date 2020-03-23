@@ -118,6 +118,34 @@ function logProvider(provider) {
 	return myCustomProvider;
 }
 
+function rewritePath(path, req) { 
+
+    var newPath = path;
+
+    if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 ) {
+
+        logger.debug( 'path: ' +  path );
+        logger.debug( 'process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
+
+        var paths = process.env.PATH_REWRITE.split(',');
+        paths.forEach( (x) => {
+            logger.debug( 'forEach x; ' + x );
+            var pairs = x.split(':');
+
+            // Key: value
+            if ( pairs.length == 2 ) {
+                if ( path.match( pairs[0] ) ) {
+                    newPath =  path.replace( pairs[0], pairs[1] );
+                } else if ( path.match( pairs[1] ) ) {
+                    newPath =  path.replace( pairs[1], pairs[0] );
+                }
+                logger.debug( 'newPath created: ' + newPath );  
+            }
+        })
+    }
+    return newPath;
+}
+
 // Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
     target: process.env.TARGET_URL || 'https://localhost:3000',
@@ -129,29 +157,7 @@ var proxy = proxy.createProxyMiddleware({
     auth: process.env.TARGET_USERNAME_PASSWORD || null,
     logLevel: log_level,
     logProvider: logProvider,
-    pathRewrite: function (path, req) { 
-
-        var newPath = path;
-
-        if ( process.env.PATH_REWRITE && process.env.PATH_REWRITE.length > 0 ) {
-
-            logger.debug( 'path: ' +  path );
-            logger.debug( 'process.env.PATH_REWRITE: ' + process.env.PATH_REWRITE  );
-
-            var paths = process.env.PATH_REWRITE.split(',');
-            paths.forEach( (x) => {
-                logger.debug( 'forEach x; ' + x );
-                var pairs = x.split(':');
-
-                // Key: value
-                if ( pairs.length == 2 && path.match( pairs[0] ) ) {
-                    newPath =  path.replace( pairs[0], pairs[1] );
-                    logger.debug( 'newPath created: ' + newPath );
-                }
-            })
-        }
-        return newPath;
-    },
+    pathRewrite: rewritePath,
     autoRewrite: true,
     selfHandleResponse: true,
     
@@ -185,8 +191,7 @@ var proxy = proxy.createProxyMiddleware({
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
             
-            delete proxyRes.headers['location'];
-            proxyRes.statusCode = '404';
+            proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
 
             proxyRes.on('end', function() {
                 res.writeHead(404, {
