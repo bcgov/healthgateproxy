@@ -192,19 +192,20 @@ var proxy = proxy.createProxyMiddleware({
 
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
+
+        } else {
+            let body = '';	
+            proxyRes.on( 'data', ( data ) => {	
+    
+                body = data.toString( 'utf-8' );
+                //logger.debug('data: ' + body );
+            });
+    
+            proxyRes.on('end', function() {	
+                proxyRes.pipe(res);	
+                res.end(body);	
+            });
         }
-        
-        let body = '';	
-        proxyRes.on( 'data', ( data ) => {	
-
-            body = data.toString( 'utf-8' );
-            //logger.debug('data: ' + body );
-        });
-
-        proxyRes.on('end', function() {	
-            proxyRes.pipe(res);	
-            res.end(body);	
-        });
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
