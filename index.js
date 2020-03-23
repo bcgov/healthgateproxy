@@ -190,22 +190,14 @@ var proxy = proxy.createProxyMiddleware({
         if ( redirectRegex.test( proxyRes.statusCode) ) {
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
-            
+            // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
-
-            proxyRes.on('end', function() {
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain'
-                });
-                res.end();
-            });
-
-        } else {           
-            proxyRes.on('end', function() {
-                proxyRes.pipe(res);
-                res.end();
-            });
         }
+
+        proxyRes.on('end', function() {
+            proxyRes.pipe(res);
+            res.end();
+        });
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
