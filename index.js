@@ -186,13 +186,19 @@ var proxy = proxy.createProxyMiddleware({
 
             
             delete proxyRes.headers['location'];
-            proxyRes.statusCode = 404;
-        }   
+            proxyRes.statusCode = '404';
 
-        proxyRes.on('end', function() {
-            proxyRes.pipe(res);
+            res.writeHead(404, {
+                'Content-Type': 'text/plain'
+            });
             res.end();
-        });
+
+        } else {           
+            proxyRes.on('end', function() {
+                proxyRes.pipe(res);
+                res.end();
+            });
+        }
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
