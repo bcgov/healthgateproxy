@@ -180,25 +180,21 @@ var proxy = proxy.createProxyMiddleware({
 
         logger.debug('statusCode: ' + proxyRes.statusCode );
 
-    /*    var redirectRegex = /^201|30(1|2|7|8)$/;
+       var redirectRegex = /^201|30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
+            log(message + " - redirect: url: " + proxyRes.headers[location] + ', status: ' + proxyRes.statusCode, true);
 
+            proxyRes.headers[location] = req.hostname || req.host + req.originalUrl;
 
-        } else {*/
-            let body = '';
+            res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            res.end();
 
-            proxyRes.on( 'data', ( data ) => {
-              data = data.toString( 'utf-8' );
-              body += data;
-    
-             // logger.debug('data: ' + body );
-            } );
-       // }
-
-       proxyRes.on('end', function() {
-        proxyRes.pipe(res);
-        res.end("my response to cli");
-      });
+        } else {           
+            proxyRes.on('end', function() {
+                proxyRes.pipe(res);
+                res.end();
+            });
+        }
     },
 
     /* Listen for the `proxyReq` event on `proxy`.
@@ -208,7 +204,7 @@ var proxy = proxy.createProxyMiddleware({
     onProxyReq: function(proxyReq, req, res) {
         logger.debug('RAW proxyReq: ' + stringify(proxyReq.headers));
         logger.debug('req: ' + stringify(req.headers) + ', host: ' + 
-                    req.host + ', original url: ' + req.originalUrl);
+                    req.hostname + ', original url: ' + req.originalUrl);
 
 
          if (proxyReq.headers) {
