@@ -182,11 +182,11 @@ var proxy = proxy.createProxyMiddleware({
 
        var redirectRegex = /^201|30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
-            log('Error - url: ' + proxyRes.headers[location] + ', status: ' + proxyRes.statusCode, true);
+            log('Error - url: ' + res.headers[location] + ', status: ' + proxyRes.statusCode, true);
 
-            proxyRes.headers[location] = req.hostname || req.host + req.originalUrl;
+            res.headers[location] = req.hostname || req.host + req.originalUrl;
 
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            res.writeHead(proxyRes.statusCode, res.headers);
             res.end();
 
         } else {           
