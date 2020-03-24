@@ -198,9 +198,10 @@ var proxy = proxy.createProxyMiddleware({
         } else {	
             var body = '';
             proxyRes.on( 'data', ( data ) => {	
-                body +=  data;
-                logger.debug('has data : ', data.length );
+                body =  data;
             });
+
+            logger.debug('has data : ', data.length );
     
             res.writeHead( proxyRes.statusCode, proxyRes.headers );
             res.write( body );
