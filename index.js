@@ -11,6 +11,7 @@ var https = require('https'),
 
 // Set logging level within proxy
 var log_level = process.env.LOG_LEVEL || 'info';
+var contentTypePlain = {'content-type': 'text/plain'};
 
 //
 // create winston logger
@@ -165,9 +166,7 @@ var proxy = proxy.createProxyMiddleware({
     onError: function (err, req, res) {
         log('proxy error: ' + err + '; req.url: ' + req.url + '; status: ' + res.statusCode, true);
         
-        res.writeHead( 500, {
-            'Content-Type': 'text/plain'
-        });
+        res.writeHead( 500, contentTypePlain );
 
         res.end('Error with proxy');
     },
@@ -185,7 +184,7 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         logger.debug('statusCode: ' + proxyRes.statusCode );
-        var body = '';	
+
 
         var redirectRegex = /^30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
@@ -193,22 +192,20 @@ var proxy = proxy.createProxyMiddleware({
 
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
-
-            res.writeHead( 404, {
-                'Content-Type': 'text/plain'
-            });
-    
+            res.writeHead( 404, contentTypePlain );
             res.end();
 
         } else {	
+
+            var body = '';
             proxyRes.on( 'data', ( data ) => {	
                 body = data;
             });
     
-            proxyRes.on('end', function() {	
+            proxyRes.on( 'end', function() {
+                proxyRes.headers['transfer-encoding'] = '';
                 res.writeHead( proxyRes.statusCode, proxyRes.headers );
-                res.write( body );	
-                res.end();
+                res.end( body );
             });
         }
     },
