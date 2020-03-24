@@ -12,6 +12,8 @@ var https = require('https'),
 // Set logging level within proxy
 var log_level = process.env.LOG_LEVEL || 'info';
 var contentTypePlain = {'content-type': 'text/plain'};
+var targetUrl = process.env.TARGET_URL || 'https://localhost:3000';
+var protocol = targetUrl.split(':').get(0);
 
 //
 // create winston logger
@@ -149,7 +151,7 @@ function rewritePath(path, req) {
 
 // Create a HTTPS Proxy server with a HTTPS targets
 var proxy = proxy.createProxyMiddleware({
-    target: process.env.TARGET_URL || 'https://localhost:3000',
+    target: targetUrl,
     agent: setHttpsAgentOptions(),
     secure: process.env.SECURE_MODE || false,
     keepAlive: true,
@@ -160,6 +162,7 @@ var proxy = proxy.createProxyMiddleware({
     logProvider: logProvider,
     pathRewrite: rewritePath,
     autoRewrite: true,
+    protocolRewrite: protocol || null,
     selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
@@ -184,6 +187,7 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         logger.debug('statusCode: ' + proxyRes.statusCode );
+        logger.debug( 'protocol: ' + protocol );
 
 
         var redirectRegex = /^30(1|2|7|8)$/;
