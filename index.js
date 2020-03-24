@@ -207,7 +207,7 @@ var proxy = proxy.createProxyMiddleware({
                 res.writeHead( proxyRes.statusCode, proxyRes.headers );
                 res.write( body );
                 res.end();
-            }
+            });
         }
     },
 
