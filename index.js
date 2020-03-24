@@ -187,7 +187,7 @@ var proxy = proxy.createProxyMiddleware({
         logger.debug('statusCode: ' + proxyRes.statusCode );
         var body = '';	
 
-        var redirectRegex = /^201|30(1|2|7|8)$/;
+        var redirectRegex = /^30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
             log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
@@ -198,7 +198,7 @@ var proxy = proxy.createProxyMiddleware({
                 'Content-Type': 'text/plain'
             });
     
-            res.end('');
+            res.end();
 
         } else {	
             proxyRes.on( 'data', ( data ) => {	
@@ -206,8 +206,9 @@ var proxy = proxy.createProxyMiddleware({
             });
     
             proxyRes.on('end', function() {	
+                res.writeHead( proxyRes.statusCode, proxyRes.headers );
                 res.write( body );	
-                res.end(proxyRes.statusCode, proxyRes.headers);
+                res.end();
             });
         }
     },
