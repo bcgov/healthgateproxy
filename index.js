@@ -199,7 +199,7 @@ var proxy = proxy.createProxyMiddleware({
             logger.debug( 'no redirect ')
             var body = '';
             proxyRes.on( 'data', ( data ) => {	
-                body = data;
+                body =  data.toString( 'utf-8' );
                 logger.debug('has data');
             });
     
