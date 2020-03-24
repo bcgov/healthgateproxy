@@ -196,15 +196,18 @@ var proxy = proxy.createProxyMiddleware({
             res.end( 'Cannot find ' + req.protocol + '://' + req.hostname + req.originalUrl );
 
         } else {	
-            let body = ''
+            var body = ''
             proxyRes.on( 'data', ( data ) => {	
-                body = data.toString('utf-8');
+                body += data;
             });
 
-            logger.debug('has data : ' + body.length );
-    
-            res.writeHead( proxyRes.statusCode, proxyRes.headers );
-            res.end(body);
+            proxyRes.on('end', function() {
+                logger.debug('has data : ' + body.length );
+        
+                res.writeHead( proxyRes.statusCode, proxyRes.headers );
+                res.write( body );
+                res.end();
+            }
         }
     },
 
