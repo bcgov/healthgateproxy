@@ -193,14 +193,13 @@ var proxy = proxy.createProxyMiddleware({
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
             res.writeHead( 404, contentTypePlain );
-            res.end( 'Cannot find ' + proxyRes.headers['location'] );
+            res.end( 'Cannot find ' + req.originalUrl );
 
         } else {	
-            logger.debug( 'no redirect ')
             var body = '';
             proxyRes.on( 'data', ( data ) => {	
-                body +=  data.toString( 'utf-8' );
-                logger.debug('has data');
+                body +=  data;
+                logger.debug('has data : ', data.length );
             });
     
             res.writeHead( proxyRes.statusCode, proxyRes.headers );
