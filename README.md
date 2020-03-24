@@ -33,6 +33,8 @@ USE_SPLUNK | Turns on and off loggging to Splunk Forwarder, If true, must config
 LOGGER_HOST | Host name for the Splunk Forwarder
 LOGGER_PORT | Port for the Splunk Forwarder
 SPLUNK_AUTH_TOKEN | Authorization token required to use the splunk server
+LOG_LEVEL | optional - 'debug', 'info'
+PATH_REWRITE | Rewrite target's url path, items are key:value, multiple items are sparated by comman (e.g. /odr/:/pgw/medhist/ or /odr/:/pgw/medhist/,/poc/:/pgw/) Note order matters
 
 
 

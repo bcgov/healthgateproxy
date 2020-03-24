@@ -1,6 +1,6 @@
 {
   "name": "healthgateproxy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "British Columbia Health Gateway Proxy Service",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/bcgov/healthgateproxy#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "http-proxy-middleware": "^1.0.0",
+    "http-proxy-middleware": "^1.0.3",
     "json-stringify-safe": "^5.0.1",
     "moment": "^2.24.0",
     "winston": "3.1.0"
