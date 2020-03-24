@@ -13,7 +13,13 @@ var https = require('https'),
 var log_level = process.env.LOG_LEVEL || 'info';
 var contentTypePlain = {'content-type': 'text/plain'};
 var targetUrl = process.env.TARGET_URL || 'https://localhost:3000';
-var protocol = targetUrl.split(':').get(0);
+var protocol = () => { 
+    var array = targetUrl.split(':');
+    if ( array.length == 2 ) {
+        return array[0];
+    }
+    return null;
+}
 
 //
 // create winston logger
@@ -162,7 +168,7 @@ var proxy = proxy.createProxyMiddleware({
     logProvider: logProvider,
     pathRewrite: rewritePath,
     autoRewrite: true,
-    protocolRewrite: protocol || null,
+    protocolRewrite: protocol,
     selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
