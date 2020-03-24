@@ -13,13 +13,6 @@ var https = require('https'),
 var log_level = process.env.LOG_LEVEL || 'info';
 var contentTypePlain = {'content-type': 'text/plain'};
 var targetUrl = process.env.TARGET_URL || 'https://localhost:3000';
-var protocol = () => { 
-    var array = targetUrl.split(':');
-    if ( array.length == 2 ) {
-        return array[0];
-    }
-    return null;
-}
 
 //
 // create winston logger
@@ -61,9 +54,6 @@ app.use('/', function (req, res, next) {
             denyAccess('missing header', res, req);
             return;
         }
-
-        // Delete authorization token - no longer needed
-        delete req.headers['x-authorization'];
 
         // Parse out the token
         var token = authHeaderValue.replace('Bearer ', '');
@@ -168,7 +158,6 @@ var proxy = proxy.createProxyMiddleware({
     logProvider: logProvider,
     pathRewrite: rewritePath,
     autoRewrite: true,
-    protocolRewrite: protocol,
     selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
@@ -193,12 +182,10 @@ var proxy = proxy.createProxyMiddleware({
         }
 
         logger.debug('statusCode: ' + proxyRes.statusCode );
-        logger.debug( 'protocol: ' + protocol );
-
 
         var redirectRegex = /^30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
-            log('Error - url: ' + proxyRes.originalUrl + ', status: ' + proxyRes.statusCode, true);
+            log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
 
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
@@ -230,10 +217,13 @@ var proxy = proxy.createProxyMiddleware({
         logger.debug('req: ' + stringify(req.headers) + ', host: ' + 
                     req.hostname + ', original url: ' + req.originalUrl);
 
-
-         if (proxyReq.headers) {
+        if ( req.headers ) {
             // Delete it because we add HTTPs Basic later
-            delete proxyReq.headers['x-authorization'];
+            delete req.headers['x-authorization'];
+        }
+
+
+         if ( proxyReq.headers ) {
 
             // Delete any attempts at cookies
             delete proxyReq.headers['cookie'];
