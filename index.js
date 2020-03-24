@@ -193,22 +193,20 @@ var proxy = proxy.createProxyMiddleware({
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
             res.writeHead( 404, contentTypePlain );
-            res.end();
+            res.write( 'Cannot find ' + proxyRes.headers['location'] );
+            // res.end();
 
         } else {	
             logger.debug( 'no redirect ')
             var body = '';
             proxyRes.on( 'data', ( data ) => {	
-                body =  data.toString( 'utf-8' );
+                body +=  data.toString( 'utf-8' );
                 logger.debug('has data');
             });
     
-            proxyRes.on( 'end', function() {
-                proxyRes.setHeader('transfer-encoding', '');
-                proxyRes.setHeader('cache-control', 'no-cache');
-                res.writeHead( proxyRes.statusCode, proxyRes.headers );
-                res.end( body );
-            });
+            res.writeHead( proxyRes.statusCode, proxyRes.headers );
+            res.write( body );
+            // res.end();
         }
     },
 
