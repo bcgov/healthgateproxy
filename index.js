@@ -204,7 +204,8 @@ var proxy = proxy.createProxyMiddleware({
             });
     
             proxyRes.on( 'end', function() {
-                proxyRes.headers['transfer-encoding'] = '';
+                proxyRes.setHeader('transfer-encoding', '');
+                proxyRes.setHeader('cache-control', 'no-cache');
                 res.writeHead( proxyRes.statusCode, proxyRes.headers );
                 res.end( body );
             });
