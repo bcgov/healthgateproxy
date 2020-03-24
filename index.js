@@ -196,7 +196,7 @@ var proxy = proxy.createProxyMiddleware({
             res.end( 'Cannot find ' + req.protocol + '://' + req.hostname + req.originalUrl );
 
         } else {	
-            var body = ''
+            let body = ''
             proxyRes.on( 'data', ( data ) => {	
                 body = data.toString('utf-8');
             });
