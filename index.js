@@ -207,6 +207,9 @@ var proxy = proxy.createProxyMiddleware({
     
             proxyRes.on('end', function() {	
                 res.set( proxyRes.headers );
+                if ( res.headers && res.headers[ 'content-length' ] ) {
+                    res.setHeader( 'content-length', body.length );
+                }
                 res.write( body );	
                 res.end();	
             });
