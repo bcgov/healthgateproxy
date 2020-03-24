@@ -189,12 +189,12 @@ var proxy = proxy.createProxyMiddleware({
 
         var redirectRegex = /^30(1|2|7|8)$/;
         if ( redirectRegex.test( proxyRes.statusCode) ) {
-            log('Error - url: ' + proxyRes.headers['location'] + ', status: ' + proxyRes.statusCode, true);
+            log('Error - url: ' + proxyRes.originalUrl + ', status: ' + proxyRes.statusCode, true);
 
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
             res.writeHead( 404, contentTypePlain );
-            res.end( 'Cannot find ' + req.hostname + req.originalUrl );
+            res.end( 'Cannot find ' + req.protocol + '//' + req.hostname + req.originalUrl );
 
         } else {	
             var body = ''
