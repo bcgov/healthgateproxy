@@ -160,7 +160,6 @@ var proxy = proxy.createProxyMiddleware({
     logProvider: logProvider,
     pathRewrite: rewritePath,
     autoRewrite: true,
-    protocolRewrite: (process.env.SECURE_MODE && process.env.SECURE_MODE == 'true')? 'https:' : 'http:',
     selfHandleResponse: true,
     
     // Listen for the `error` event on `proxy`.
