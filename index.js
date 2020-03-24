@@ -190,7 +190,7 @@ var proxy = proxy.createProxyMiddleware({
             // rewrite the location path
             proxyRes.headers['location'] = rewritePath( proxyRes.headers['location'], res);
             res.writeHead( 404, contentTypePlain );
-            res.end( 'Cannot find ' + req.hostname + req.originalUrl );
+            res.end();
 
         } else {	
             var body = ''
