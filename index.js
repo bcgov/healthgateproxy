@@ -196,10 +196,11 @@ var proxy = proxy.createProxyMiddleware({
             res.end();
 
         } else {	
-
+            logger.debug( 'no redirect ')
             var body = '';
             proxyRes.on( 'data', ( data ) => {	
                 body = data;
+                logger.debug('has data');
             });
     
             proxyRes.on( 'end', function() {
