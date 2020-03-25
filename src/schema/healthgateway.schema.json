@@ -218,9 +218,9 @@
                     "$comment": "Type of operation being requested",
                     "type": "string",
                     "enum": [
-                        "get",
-                        "set",
-                        "delete"
+                        "GET",
+                        "SET",
+                        "DELETE"
                     ]
                 },
                 "phn": {
