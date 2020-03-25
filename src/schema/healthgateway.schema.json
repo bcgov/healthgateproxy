@@ -153,12 +153,12 @@
             "$comment": "Unique identifier (input/output)",
             "type": "string"
         },
-        "HDID": {
+        "hdid": {
             "$comment": "Requesting user - for auditing/tracability (input)",
             "type": "string",
             "maxLength": 54
         },
-        "RequestingIP": {
+        "requestingIP": {
             "$comment": "IP Address of the user requesting the data (input)",
             "type": "string"
         },
