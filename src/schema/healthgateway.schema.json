@@ -110,7 +110,7 @@
                     "type": "number"
                 },
                 "refills": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "dinpin": {
                     "type": "string"
