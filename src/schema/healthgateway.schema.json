@@ -1,7 +1,7 @@
 {
     "id": "healthgateway/healthgateway.schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "definitions": {
         "DateType": {
             "$comment": "Date as a string formatted YYYY-MM-DD",
@@ -149,22 +149,22 @@
     "description": "Message structure for medication history request and response",
     "type": "object",
     "properties": {
+        "uuid": {
+            "$comment": "Unique identifier",
+            "type": "string"
+        },
+        "HDID": {
+            "$comment": "Requesting user - for auditing/tracability",
+            "type": "string",
+            "maxLength": 54
+        },
+        "RequestingIP": {
+            "$comment": "IP Address of the user requesting the data",
+            "type": "string"
+        },
         "getMedicationHistoryRequest": {
             "type": "object",
             "properties": {
-                "uuid": {
-                    "$comment": "Unique identifier",
-                    "type": "string"
-                },
-                "HDID": {
-                    "$comment": "Requesting user - for auditing/tracability",
-                    "type": "string",
-                    "maxLength": 54
-                },
-                "RequestingIP": {
-                    "$comment": "IP Address of the user requesting the data",
-                    "type": "string"
-                },
                 "startDate": {
                     "$ref": "#/definitions/DateType"
                 },
@@ -188,17 +188,12 @@
                 }
             },
             "required": [
-                "uuid",
                 "phn"
             ]
         },
         "getMedicationHistoryResponse": {
             "type": "object",
             "properties": {
-                "uuid": {
-                    "$comment": "Unique identifier",
-                    "type": "string"
-                },
                 "records": {
                     "$comment": "Arrary of medication records",
                     "$ref": "#medicationRecords"
@@ -211,10 +206,36 @@
                     "$comment": "Total number of page for data",
                     "type": "integer"
                 }
+            }
+        },
+        "maintainProtectiveWord": {
+            "type": "object",
+            "properties": {
+                "operator": {
+                    "$comment": "Type of operation being requested",
+                    "type": "string",
+                    "enum": [
+                        "get",
+                        "set",
+                        "delete"
+                    ]
+                },
+                "phn": {
+                    "$ref": "#/definitions/PhnType"
+                },
+                "value": {
+                    "$comment": "Protected word returned if a get",
+                    "type": "string",
+                    "maxLength": 8
+                }
             },
             "required": [
-                "uuid"
+                "operator",
+                "phn"
             ]
-        }
-    }
+        }    
+    },
+    "required": [
+        "uuid"
+    ]
 }
