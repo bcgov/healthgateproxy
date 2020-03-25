@@ -150,19 +150,20 @@
     "type": "object",
     "properties": {
         "uuid": {
-            "$comment": "Unique identifier",
+            "$comment": "Unique identifier (input/output)",
             "type": "string"
         },
         "HDID": {
-            "$comment": "Requesting user - for auditing/tracability",
+            "$comment": "Requesting user - for auditing/tracability (input)",
             "type": "string",
             "maxLength": 54
         },
         "RequestingIP": {
-            "$comment": "IP Address of the user requesting the data",
+            "$comment": "IP Address of the user requesting the data (input)",
             "type": "string"
         },
         "getMedicationHistoryRequest": {
+            "$comment": "Request to get a patient's medical history (input)",
             "type": "object",
             "properties": {
                 "startDate": {
@@ -192,6 +193,7 @@
             ]
         },
         "getMedicationHistoryResponse": {
+            "$comment": "Patient's medical history (output)",
             "type": "object",
             "properties": {
                 "records": {
@@ -209,6 +211,7 @@
             }
         },
         "maintainProtectiveWord": {
+            "$comment": "Request patient's protective word (input/output)",
             "type": "object",
             "properties": {
                 "operator": {
