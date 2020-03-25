@@ -91,7 +91,7 @@
             "record": {
                 "$comments": "This the ODR identifier (unique key)",
                 "recordId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "$comment": "Date the prescription was dispensed",
                 "dateDispensed": {
@@ -107,10 +107,10 @@
                     "$ref": "#name"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "refills": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "dinpin": {
                     "type": "string"
