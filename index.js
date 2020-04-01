@@ -220,6 +220,9 @@ var proxy = proxy.createProxyMiddleware({
         if ( req.headers ) {
             // Delete it because we add HTTPs Basic later
             delete req.headers['x-authorization'];
+
+            // Delete any attempts at cookies
+            delete req.headers['cookie'];  
         }
 
 
