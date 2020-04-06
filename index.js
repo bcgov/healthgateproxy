@@ -221,8 +221,13 @@ var proxy = proxy.createProxyMiddleware({
             // Delete it because we add HTTPs Basic later
             delete req.headers['x-authorization'];
 
+            delete req.header['accept-encoding'];
+
             // Delete any attempts at cookies
             delete req.headers['cookie'];  
+
+            // Delete set-cookie
+            delete proxyReq.headers['set-cookie'];
         }
 
 
