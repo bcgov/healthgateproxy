@@ -227,7 +227,7 @@ var proxy = proxy.createProxyMiddleware({
             delete req.headers['cookie'];  
 
             // Delete set-cookie
-            delete proxyReq.headers['set-cookie'];
+            delete req.headers['set-cookie'];
         }
 
 
