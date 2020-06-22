@@ -143,6 +143,32 @@
                     ]
                 }
             }
+        },
+        "MedicalVistType": {
+            "id": "#medicalVisitRecords",
+            "type": "array",
+            "record": {
+                "$comments": "This the unique ORACLE identifier",
+                "visitId": {
+                    "type": "integer"
+                },
+                "$comment": "Date of medical visit",
+                "serviceDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "feeCode": {
+                    "$comments": "",
+                    "type": "integer"
+                },
+                "diagnosticCode": {
+                    "$comment": "Array of ICD9 codes (diag1, diag2, diag3)",
+                    "type": "array",
+                    "maxItems": 3,
+                    "codes": {
+                        "type": "string"
+                    }
+                }
+            }
         }
     },
     "title": "HealthGateway",
@@ -236,7 +262,40 @@
                 "operator",
                 "phn"
             ]
-        }    
+        },
+        "getMspVisitsRequest": {
+            "$comment": "Request to get a patient's medical visits (input)",
+            "type": "object",
+            "properties": {
+                "startDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "endDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "phn": {
+                    "$ref": "#/definitions/PhnType"
+                },
+                "pageSize": {
+                    "$ref": "#/definitions/PageSizeType",
+                    "default": 25
+                },
+                "pageNumber": {
+                    "$ref": "#/definitions/PageNumberType",
+                    "default": 1
+                },
+                "order": {
+                    "$ref": "#/definitions/OrderByType",
+                    "default": "DESC"
+                }
+            },
+            "required": [
+                "phn"
+            ]
+        },
+        "getMspVisitsResponse": {
+
+        }
     },
     "required": [
         "uuid"
