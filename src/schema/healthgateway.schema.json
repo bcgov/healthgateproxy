@@ -144,7 +144,8 @@
                 }
             }
         },
-        "MedicalVistType": {
+        "MedicalVisitType": {
+            "$comment": "POC definition for returning list of Medical Visit claims",
             "id": "#medicalVisitRecords",
             "type": "array",
             "record": {
@@ -152,12 +153,12 @@
                 "visitId": {
                     "type": "integer"
                 },
-                "$comment": "Date of medical visit",
+                "$comment": "Date of medical claim",
                 "serviceDate": {
                     "$ref": "#/definitions/DateType"
                 },
                 "feeCode": {
-                    "$comments": "",
+                    "$comments": "Fee code for the visit",
                     "type": "integer"
                 },
                 "diagnosticCode": {
@@ -167,6 +168,17 @@
                     "codes": {
                         "type": "string"
                     }
+                },
+                "specialtyCode": {
+                    "$comment": "",
+                    "type": "string"
+                },
+                "practitionerNumber": {
+                    "$comment": "Practitioner license number",
+                    "type": "string"
+                },
+                "payeeNumber": {
+                    "type": "string"
                 }
             }
         }
@@ -263,7 +275,7 @@
                 "phn"
             ]
         },
-        "getMspVisitsRequest": {
+        "getMspVisitHistoryRequest": {
             "$comment": "Request to get a patient's medical visits (input)",
             "type": "object",
             "properties": {
@@ -293,8 +305,15 @@
                 "phn"
             ]
         },
-        "getMspVisitsResponse": {
-
+        "getMspVisitHistoryResponse": {
+            "$comment": "Patient's medical visit history (output)",
+            "type": "object",
+            "properties": {
+                "visits": {
+                    "$comment": "Arrary of medical visits",
+                    "$ref": "#MedicalVisitType"
+                }
+            }
         }
     },
     "required": [
