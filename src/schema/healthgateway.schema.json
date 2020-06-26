@@ -313,6 +313,14 @@
                 "visits": {
                     "$comment": "Arrary of medical visits",
                     "$ref": "#MedicalVisitType"
+                },
+                "totalRecords": {
+                    "$comment": "total number of claim records for the time frame without page limits",
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "$comment": "Total number of page for data",
+                    "type": "integer"
                 }
             }
         }
