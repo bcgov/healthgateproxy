@@ -310,7 +310,7 @@
             "$comment": "Patient's medical visit history (output)",
             "type": "object",
             "properties": {
-                "visits": {
+                "claims": {
                     "$comment": "Arrary of medical visits",
                     "$ref": "#MedicalVisitType"
                 },
