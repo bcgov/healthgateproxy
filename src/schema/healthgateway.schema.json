@@ -150,7 +150,7 @@
             "type": "array",
             "record": {
                 "$comments": "This the unique ORACLE identifier",
-                "visitId": {
+                "claimId": {
                     "type": "integer"
                 },
                 "$comment": "Date of medical visit",
