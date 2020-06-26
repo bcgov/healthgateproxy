@@ -144,21 +144,21 @@
                 }
             }
         },
-        "MedicalVisitType": {
-            "$comment": "POC definition for returning list of Medical Visit claims",
-            "id": "#medicalVisitRecords",
+        "MedicalClaimType": {
+            "$comment": "POC definition for returning list of Medical claims",
+            "id": "#medicalClaimRecords",
             "type": "array",
-            "record": {
+            "claims": {
                 "$comments": "This the unique ORACLE identifier",
                 "claimId": {
                     "type": "integer"
                 },
-                "$comment": "Date of medical visit",
+                "$comment": "Date of medical claim",
                 "serviceDate": {
                     "$ref": "#/definitions/DateType"
                 },
                 "feeCode": {
-                    "$comments": "Fee code for the visit",
+                    "$comments": "Fee code for the claim",
                     "type": "integer"
                 },
                 "diagnosticCode": {
@@ -277,7 +277,7 @@
             ]
         },
         "getMspVisitHistoryRequest": {
-            "$comment": "Request to get a patient's medical visits (input)",
+            "$comment": "Request to get a patient's medical claim (input)",
             "type": "object",
             "properties": {
                 "startDate": {
@@ -307,12 +307,12 @@
             ]
         },
         "getMspVisitHistoryResponse": {
-            "$comment": "Patient's medical visit history (output)",
+            "$comment": "Patient's medical claim history (output)",
             "type": "object",
             "properties": {
                 "claims": {
-                    "$comment": "Arrary of medical visits",
-                    "$ref": "#MedicalVisitType"
+                    "$comment": "Arrary of medical claims",
+                    "$ref": "#MedicalClaimType"
                 },
                 "totalRecords": {
                     "$comment": "total number of claim records for the time frame without page limits",
