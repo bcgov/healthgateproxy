@@ -166,7 +166,8 @@
                     "type": "array",
                     "maxItems": 3,
                     "codes": {
-                        "type": "string"
+                        "type": "string",
+                        "maxLength": 10
                     }
                 },
                 "specialtyCode": {
