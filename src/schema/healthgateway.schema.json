@@ -176,7 +176,7 @@
                         "diagCode3": {
                             "type": "string",
                             "maxLength": 10
-                        },
+                        }
                     }
 
                 },
