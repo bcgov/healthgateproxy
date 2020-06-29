@@ -163,12 +163,22 @@
                 },
                 "diagnosticCode": {
                     "$comment": "Array of ICD9 codes (diag1, diag2, diag3)",
-                    "type": "array",
-                    "maxItems": 3,
-                    "codes": {
-                        "type": "string",
-                        "maxLength": 10
+                    "type": "object",
+                    "properties": {
+                        "diagCode1": {
+                            "type": "string",
+                            "maxLength": 10
+                        },
+                        "diagCode2": {
+                            "type": "string",
+                            "maxLength": 10
+                        },
+                        "diagCode3": {
+                            "type": "string",
+                            "maxLength": 10
+                        },
                     }
+
                 },
                 "specialtyCode": {
                     "$comment": "",
