@@ -181,7 +181,11 @@
 
                 },
                 "specialtyCode": {
-                    "$comment": "",
+                    "$comment": "TODO - DISCUSS With HGW - remove after POC",
+                    "type": "string"
+                },
+                "specialtyDesc": {
+                    "$comment": "Specialty code descriptions",
                     "type": "string"
                 },
                 "practitionerNumber": {
