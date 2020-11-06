@@ -17,7 +17,7 @@ jobs:
   - job: "OCP3"
     pool:
       name: "HealthGateway"
-    displayName: 'Build OpenShift Image and push to Image Stream'
+    displayName: 'Build OpenShift 3'
     steps:
     - script: |
         set -e
@@ -25,11 +25,12 @@ jobs:
         oc start-build $(App.Name) --wait --follow 
         oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
       enabled: 'true'
+      displayName: 'Build Image and push to Image stream'
 
   - job: "OCP4"
     pool:
       name: "HealthGatewayOCP4"
-    displayName: 'Build OpenShift Image and push to Image Stream'
+    displayName: 'Build OpenShift 4'
     steps:
     - script: |
         set -e
@@ -37,3 +38,4 @@ jobs:
         oc start-build $(App.Name) --wait --follow 
         oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
       enabled: 'true'
+      displayName: 'Build Image and push to Image stream'
