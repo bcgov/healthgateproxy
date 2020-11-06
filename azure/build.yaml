@@ -13,14 +13,27 @@ trigger:
    include:
      - master
 
-pool:
-  name: 'HealthGateway'
-
-steps:
-  - script: |
-      set -e
-      oc process -f $(Build.SourcesDirectory)/openshift/templates/healthgateproxy-build.json -p NAME=$(App.Name) | oc apply -f -
-      oc start-build $(App.Name) --wait --follow 
-      oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
+jobs:
+  - job: "OCP3"
+    pool:
+      name: "HealthGateway"
     displayName: 'Build OpenShift Image and push to Image Stream'
-    enabled: 'true'
+    steps:
+    - script: |
+        set -e
+        oc process -f $(Build.SourcesDirectory)/openshift/templates/healthgateproxy-build.json -p NAME=$(App.Name) | oc apply -f -
+        oc start-build $(App.Name) --wait --follow 
+        oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
+      enabled: 'true'
+
+  - job: "OCP4"
+    pool:
+      name: "HealthGatewayOCP4"
+    displayName: 'Build OpenShift Image and push to Image Stream'
+    steps:
+    - script: |
+        set -e
+        oc process -f $(Build.SourcesDirectory)/openshift/templates/healthgateproxy-build.json -p NAME=$(App.Name) | oc apply -f -
+        oc start-build $(App.Name) --wait --follow 
+        oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
+      enabled: 'true'
