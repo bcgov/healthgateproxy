@@ -65,6 +65,12 @@
                 "addrLine2": {
                     "$ref": "#/definitions/AddressLineType"
                 },
+                "addrLine3": {
+                    "$ref": "#/definitions/AddressLineType"
+                },
+                "addrLine4": {
+                    "$ref": "#/definitions/AddressLineType"
+                },
                 "city": {
                     "type": "string",
                     "maxLength": 25
@@ -89,12 +95,12 @@
             "id": "#medicationRecords",
             "type": "array",
             "record": {
-                "$comments": "This the ODR identifier (unique key)",
                 "recordId": {
+                    "$comments": "This the ODR identifier (unique key)",
                     "type": "integer"
                 },
-                "$comment": "Date the prescription was dispensed",
                 "dateDispensed": {
+                    "$comment": "Date the prescription was dispensed",
                     "$ref": "#/definitions/DateType"
                 },
                 "rxNumber": {
@@ -143,7 +149,52 @@
                     ]
                 }
             }
-        }
+        },
+        "claimRecordsType": {
+            "id": "#claimRecords",
+            "type": "array",
+            "claims": {
+                "claimId": {
+					"$comments": "This the ODR identifier (unique key)",
+                    "type": "integer"
+                },
+                "serviceDate": {
+					"$comment": "Date of the visit to medical office",
+                    "$ref": "#/definitions/DateType"
+                },
+				"practitionerName": {
+					"$comment": "Name of practitioner (payee)",
+					"type": "string"
+				},
+			    "locationName": {
+					"$comment": "Name of the clinic",
+					"type": "string"
+				},
+				"locationAddress": {
+					"$comment": "Address for the clinic",
+                    "$ref": "#address"
+                },
+				"specialtyDesc": {
+					"type": "string"
+				},
+				"feeDesc": {
+					"$comment": "Description of fee",
+					"type": "string"
+				},
+                "diagnosticCode": {
+					"$comment": "ICD 9 Codes",
+                    "diagCode1": {
+						"type": "string"
+					},
+                    "diagCode2": {
+						"type": "string"
+					},
+                    "diagCode3": {
+						"type": "string"
+					}
+                }
+			}
+		} 
     },
     "title": "HealthGateway",
     "description": "Message structure for medication history request and response",
@@ -236,7 +287,55 @@
                 "operator",
                 "phn"
             ]
-        }    
+        },
+    "getMspVisitHistoryRequest": {
+            "$comment": "Request to get a patient's claim history (input)",
+            "type": "object",
+            "properties": {
+                "startDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "endDate": {
+                    "$ref": "#/definitions/DateType"
+                },
+                "phn": {
+                    "$ref": "#/definitions/PhnType"
+                },
+                "pageSize": {
+                    "$ref": "#/definitions/PageSizeType",
+                    "default": 25
+                },
+                "pageNumber": {
+                    "$ref": "#/definitions/PageNumberType",
+                    "default": 1
+                },
+                "order": {
+                    "$ref": "#/definitions/OrderByType",
+                    "default": "DESC
+                }
+            },
+            "required": [
+                "phn"
+            ]
+        },
+        "getMspVisitHistoryResponse": {
+            "$comment": "Patient's claim history (output)",
+            "type": "object",
+            "properties": {
+                "claims": {
+                    "$comment": "Array of claim records",
+                    "$ref": "#claimRecords"
+                },
+                "totalRecords": {
+                    "$comment": "total number of claim records for the time frame without page limits",
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "$comment": "Total number of page for data",
+                    "type": "integer"
+                }
+            }
+        }
     },
     "required": [
         "uuid"
