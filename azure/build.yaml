@@ -14,19 +14,6 @@ trigger:
      - master
 
 jobs:
-  - job: "OCP3"
-    pool:
-      name: "HealthGateway"
-    displayName: 'Build OpenShift 3'
-    steps:
-    - script: |
-        set -e
-        oc process -f $(Build.SourcesDirectory)/openshift/templates/healthgateproxy-build.json -p NAME=$(App.Name) | oc apply -f -
-        oc start-build $(App.Name) --wait --follow 
-        oc tag $(App.Name):latest $(App.Name):$(Build.BuildNumber)
-      enabled: 'true'
-      displayName: 'Build Image and push to Image stream'
-
   - job: "OCP4"
     pool:
       name: "HealthGateway"
