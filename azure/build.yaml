@@ -14,8 +14,8 @@ trigger:
      - master
 
 schedules:
-- cron: "0 0 * * *"
-  displayName: Daily midnight build
+- cron: "0 8 * * 0"
+  displayName: Weekly Sunday morning build
   branches:
     include:
     - master
